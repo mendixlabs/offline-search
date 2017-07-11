@@ -1,0 +1,58 @@
+{
+  "name": "offline-search",
+  "widgetName": "OfflineSearch",
+  "version": "1.0.0",
+  "description": "Search Mendix List views, Template Grids and Data Grids using a single-field search",
+  "copyright": "Mendix BV",
+  "scripts": {
+    "pretest": "tsc",
+    "lint": "tslint -c tslint.json '**/*.ts' '**/*.tsx' --exclude '**/node_modules/**'"
+  },
+  "pre-commit": [
+    "pretest",
+    "lint"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mendixlabs/offline-search"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/mendixlabs/offline-search/issues"
+  },
+  "devDependencies": {
+    "@types/big.js": "0.0.31",
+    "@types/dojo": "^1.9.35",
+    "@types/react": "^15.0.16",
+    "@types/react-dom": "^0.14.23",
+    "check-dependencies": "^1.0.1",
+    "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.28.0",
+    "extract-text-webpack-plugin": "^2.1.0",
+    "grunt": "1.0.1",
+    "grunt-check-dependencies": "^1.0.0",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-compress": "^1.4.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-file-append": "0.0.7",
+    "grunt-newer": "^1.1.1",
+    "grunt-webpack": "^2.0.1",
+    "json-loader": "^0.5.4",
+    "mendix-client": "https://github.com/FlockOfBirds/Mendix-client-typing/archive/7.1.0.tar.gz",
+    "pre-commit": "^1.2.2",
+    "raw-loader": "^0.5.1",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "source-map-loader": "^0.2.0",
+    "style-loader": "^0.13.2",
+    "ts-loader": "^2.0.1",
+    "tslint": "^5.4.2",
+    "tslint-eslint-rules": "^4.1.1",
+    "typescript": "^2.2.1",
+    "url-loader": "^0.5.8",
+    "webpack": "^2.3.1",
+    "webpack-dev-server": "^2.2.0",
+    "webpack-merge": "^4.1.0"
+  }
+}
