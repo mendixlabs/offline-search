@@ -7,12 +7,12 @@
     <properties>
         <property key="targetGridName" type="string" required="true" defaultValue="">
             <caption>Grid name</caption>
-            <category>Appearance</category>
+            <category>Data source</category>
             <description>The name of the grid on this page</description>
         </property>
         <property key="searchMethod" type="enumeration" defaultValue="contains">
             <caption>Search method</caption>
-            <category>Behavior</category>
+            <category>Data source</category>
             <description>Search method to use</description>
             <enumerationValues>
                 <enumerationValue key="equals">Equals</enumerationValue>
@@ -23,15 +23,25 @@
                 <enumerationValue key="contains">Contains</enumerationValue>
             </enumerationValues>
         </property>
-        <property key="searchEntity" type="string" required="true">
+        <property key="searchEntity" type="string" required="false">
             <caption>Grid entity</caption>
-            <category>Behavior</category>
+            <category>Data source</category>
              <description>The type of objects in the grid</description>
         </property>
         <property key="searchAttribute" type="string" required="false">
-            <caption>Search</caption>
-            <category>Behavior</category>
-            <description>The attribute to search on the grid.</description>
+            <caption>Search attribute</caption>
+            <category>Data source</category>
+            <description>The search attribute on the search entity</description>
+        </property>
+        <property key="defaultQuery" type="translatableString" required="false">
+            <caption>Default query</caption>
+            <category>Data source</category>
+            <description>Limits the records show on the grid at the start</description>
+        </property>
+        <property key="showSearchBar" type="boolean" defaultValue="true">
+            <caption>Show search bar</caption>
+            <category>Appearance</category>
+            <description> Use to control if the search bar should be visible or not</description>
         </property>
     </properties>
 </widget>

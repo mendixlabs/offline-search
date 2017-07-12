@@ -121,10 +121,14 @@ class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
         const grid = self.targetWidget;
         // using datasource variable because in Mendix API `Template grid` uses dataSource for data
         let datasource = grid._datasource;
+        let constraints = `[${self.props.searchMethod}(${self.props.searchAttribute},'${self.searchInput.value}')]`;
+
         if (!grid._datasource) {
             datasource = grid._dataSource;
         }
-        const constraints = `[${self.props.searchMethod}(${self.props.searchAttribute},'${self.searchInput.value}')]`;
+        if (this.props.searchEntity) {
+            constraints = `${self.props.searchEntity} [${self.props.searchMethod}(${self.props.searchAttribute},'${self.searchInput.value}')]`;
+        }
         self.searchInput.value.trim() ? datasource._constraints = constraints : datasource._constraints = null;
         if (grid.reload) {
             // data grid and template grid
