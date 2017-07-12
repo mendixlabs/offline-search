@@ -7,12 +7,12 @@ const widgetName = package.widgetName;
 
 const widgetConfig = {
     entry: {
-        OfflineSearch: `./src/${widgetName}/widget/${widgetName}.ts`,
+        OfflineSearch: `./src/components/${widgetName}.ts`,
     },
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: `src/${widgetName}/widget/${widgetName}.js`,
-        libraryTarget: "amd"
+        filename: `src/com/mendix/widget/custom/${widgetName}/${widgetName}.js`,
+        libraryTarget: "umd"
     },
     resolve: {
         extensions: [ ".ts" ],
@@ -30,21 +30,21 @@ const widgetConfig = {
         ]
     },
     devtool: "source-map",
-    externals: [ /^mxui\/|^mendix\/|^dojo\/|^dijit\// ],
+    externals: [ "react", "react-dom", /^mxui\/|^mendix\/|^dojo\/|^dijit\// ],
     plugins: [
         new CopyWebpackPlugin([
             { from: "src/**/*.xml" },
         ], { copyUnmodified: true }),
-        new ExtractTextPlugin({ filename: "./src/OfflineSearch/widget/ui/OfflineSearch.css" }),
+        new ExtractTextPlugin({ filename: `./src/com/mendix/widget/custom/${widgetName}/ui/${widgetName}.css` }),
         new webpack.LoaderOptionsPlugin({ debug: true })
     ]
 };
 
 const previewConfig = {
-    entry: `./src/${widgetName}/widget/${widgetName}.webmodeler.ts`,
+    entry: `./src/${widgetName}.webmodeler.ts`,
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: `src/${widgetName}/widget/${widgetName}.webmodeler.js`,
+        filename: `src/${widgetName}.webmodeler.js`,
         libraryTarget: "commonjs"
     },
     resolve: {
