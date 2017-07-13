@@ -6,8 +6,7 @@ import * as dijitRegistry from "dijit/registry";
 import "../ui/OfflineSearch.css";
 
 // tslint:disable-next-line:max-line-length
-type searchMethodOptions = "equals" |"lessThan" | "lessThanOrEquals" |"greaterThan" | "greaterThanOrEquals" | "contains";
-
+type searchMethodOptions = "equals" | "lessThan" | "lessThanOrEquals" | "greaterThan" | "greaterThanOrEquals" | "contains";
 interface Grid extends mxui.widget._WidgetBase {
     _datasource: {
         _constraints: string | null;
@@ -18,15 +17,14 @@ interface Grid extends mxui.widget._WidgetBase {
     update: () => void;
     reload: () => void;
 }
-
-export interface OfflineSearchProps extends Props<OfflineSearch> {
+interface OfflineSearchProps extends Props<OfflineSearch> {
     searchEntity: string;
     searchAttribute: string;
     targetGridName: string;
     searchMethod: searchMethodOptions;
 }
 
-export interface OfflineSearchState {
+interface OfflineSearchState {
     alertMessage?: string;
     buttonVisibility?: string;
 }
@@ -36,7 +34,6 @@ class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
     SearchButton: HTMLButtonElement;
     private searchInput: HTMLInputElement;
     private targetWidget: Grid;
-    private targetNode: HTMLElement | null;
     private widgetSearchOffline: HTMLElement;
 
     constructor(props: OfflineSearchProps) {
@@ -50,14 +47,22 @@ class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
         this.onSearchKeyDown = this.onSearchKeyDown.bind(this);
     }
 
-    // tslint:disable:max-line-length
     render() {
-        return DOM.div({ className: "widget-offline-search", ref: div => this.widgetSearchOffline = div ? div : HTMLElement.prototype },
+        return DOM.div({
+            className: "widget-offline-search",
+            ref: div => this.widgetSearchOffline = div ? div : HTMLElement.prototype
+        },
             createElement(Alert, { message: this.state.alertMessage }),
             DOM.div({ className: "search-container" },
                 DOM.span({ className: "glyphicon glyphicon-search" }),
-                DOM.input({ className: "form-control", placeholder: "Search", ref: input => this.searchInput = input ? input : HTMLInputElement.prototype }),
-                DOM.button({ className: `btn-transparent ${this.state.buttonVisibility}`, ref: button => this.SearchButton = button ? button : HTMLButtonElement.prototype },
+                DOM.input({
+                    className: "form-control", placeholder: "Search",
+                    ref: input => this.searchInput = input ? input : HTMLInputElement.prototype
+                }),
+                DOM.button({
+                    className: `btn-transparent ${this.state.buttonVisibility}`,
+                    ref: button => this.SearchButton = button ? button : HTMLButtonElement.prototype
+                },
                     DOM.span({ className: "glyphicon glyphicon-remove" })
                 )
             )
@@ -66,15 +71,7 @@ class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
 
     componentDidMount() {
         this.setUpEvents();
-        this.targetNode = this.findTargetNode(this.props.targetGridName);
-        if (this.targetNode) {
-            this.targetWidget = dijitRegistry.byNode(this.targetNode);
-            if (!this.targetWidget) {
-                this.setState({ alertMessage: "Found a DOM node but could not find the grid widget." });
-            }
-        } else {
-            this.setState({ alertMessage: "Could not find the list node." });
-        }
+        this.findTargetNode();
     }
 
     componentWillUnmount() {
@@ -82,9 +79,11 @@ class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
         this.searchInput.removeEventListener("keyup", this.onSearchKeyDown);
     }
 
-    private findTargetNode(targetName: string): HTMLElement | null {
+    private findTargetNode() {
         let queryNode = this.widgetSearchOffline.parentNode as HTMLElement;
         let targetNode: HTMLElement | null = null;
+        const targetName = this.props.targetGridName;
+
         while (!targetNode) {
             targetNode = queryNode.querySelector(`.mx-name-${targetName}`) as HTMLElement;
             if (window.document.isEqualNode(queryNode)) break;
@@ -93,9 +92,12 @@ class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
 
         if (!targetNode) {
             this.setState({ alertMessage: `Unable to find grid with the name "${targetName}"` });
+        } else {
+            this.targetWidget = dijitRegistry.byNode(targetNode);
+            if (!this.targetWidget) {
+                this.setState({ alertMessage: "Found a DOM node but could not find the grid widget." });
+            }
         }
-
-        return targetNode;
     }
 
     private setUpEvents() {
@@ -119,15 +121,12 @@ class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
 
     private updateConstraints(self: OfflineSearch) {
         const grid = self.targetWidget;
-        // using datasource variable because in Mendix API `Template grid` uses dataSource for data
-        let datasource = grid._datasource;
+        const datasource = grid._datasource ? grid._datasource : grid._dataSource;
         let constraints = `[${self.props.searchMethod}(${self.props.searchAttribute},'${self.searchInput.value}')]`;
 
-        if (!grid._datasource) {
-            datasource = grid._dataSource;
-        }
         if (this.props.searchEntity) {
-            constraints = `${self.props.searchEntity} [${self.props.searchMethod}(${self.props.searchAttribute},'${self.searchInput.value}')]`;
+            // tslint:disable-next-line:max-line-length
+            constraints = `${self.props.searchEntity}[${self.props.searchMethod}(${self.props.searchAttribute},'${self.searchInput.value}')]`;
         }
         self.searchInput.value.trim() ? datasource._constraints = constraints : datasource._constraints = null;
         if (grid.reload) {
