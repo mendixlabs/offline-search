@@ -23,6 +23,7 @@ interface ListView extends mxui.widget._WidgetBase {
 }
 
 interface OfflineSearchProps extends Props<OfflineSearch> {
+    defaultQuery: string;
     searchEntity: string;
     searchAttribute: string;
     targetGridName: string;
@@ -76,6 +77,7 @@ class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
         this.findTargetNode();
         this.isValidWidget();
         this.setUpEvents();
+        this.setDefaultSearch();
     }
 
     componentWillUnmount() {
@@ -125,6 +127,13 @@ class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
     private setUpEvents() {
         this.searchButton.addEventListener("click", this.onClear);
         this.searchInput.addEventListener("keyup", this.onSearchKeyDown);
+    }
+
+    private setDefaultSearch() {
+        if (this.isValidWidget()) {
+            this.searchInput.value = this.props.defaultQuery;
+            this.updateConstraints(this);
+        }
     }
 
     private onSearchKeyDown(event: CustomEvent) {
