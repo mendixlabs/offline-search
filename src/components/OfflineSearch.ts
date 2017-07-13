@@ -26,6 +26,7 @@ interface OfflineSearchProps extends Props<OfflineSearch> {
     defaultQuery: string;
     searchEntity: string;
     searchAttribute: string;
+    showSearchBar: string;
     targetGridName: string;
     searchMethod: searchMethodOptions;
 }
@@ -54,7 +55,7 @@ class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
 
     render() {
         return createElement("div", {
-            className: "widget-offline-search"
+            className: `widget-offline-search ${this.props.showSearchBar}`
         },
             createElement(Alert, { message: this.state.alertMessage }),
             createElement("div", { className: "search-container" },

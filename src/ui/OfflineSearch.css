@@ -2,6 +2,11 @@
     position: relative;
 }
 
+.widget-offline-search.hidden {
+    display: none;
+    visibility: hidden;
+}
+
 .widget-offline-search .search-container input {
     display: inline-block;
     padding-left: 30px;

@@ -38,10 +38,14 @@
             <category>Data source</category>
             <description>Limits the records show on the grid at the start</description>
         </property>
-        <property key="showSearchBar" type="boolean" defaultValue="true">
+        <property key="showSearchBar" type="enumeration" defaultValue="visible">
             <caption>Show search bar</caption>
             <category>Appearance</category>
             <description> Use to control if the search bar should be visible or not</description>
+             <enumerationValues>
+                <enumerationValue key="visible">Yes</enumerationValue>
+                <enumerationValue key="hidden">No</enumerationValue>
+            </enumerationValues>
         </property>
     </properties>
 </widget>
