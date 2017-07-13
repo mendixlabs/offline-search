@@ -36,6 +36,10 @@
     "no-trailing-whitespace": true,
     "no-unused-expression": true,
     "no-var-keyword": true,
+    "max-line-length": [
+      true,
+      150
+    ],
     "one-line": [
       true,
       "check-catch",
