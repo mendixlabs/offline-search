@@ -10,7 +10,10 @@ type SearchMethodOptions = "equals" | "contains";
 
 interface ListView extends mxui.widget._WidgetBase {
     _datasource: {
-        _constraints: string | null;
+        _constraints: Array<{
+            attribute: string;
+            operator: string;
+        }>;
         _setSize: number;
         atEnd: () => boolean;
         _pageSize: number;
@@ -157,12 +160,18 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
 
     private updateConstraints(self: OfflineSearch) {
         const datasource = self.targetWidget._datasource;
-        let constraints = `[${self.props.searchMethod}(${self.props.searchAttribute},'${self.searchInput.value}')]`;
+        let constraints = [ {
+            attribute: self.props.searchAttribute,
+            operator: self.props.searchMethod, value: self.searchInput.value
+        } ];
 
         if (this.props.searchEntity) {
-            constraints = `[${self.props.searchMethod}(${self.props.searchEntity}/${self.props.searchAttribute},'${self.searchInput.value}')]`;
+            constraints = [ {
+                attribute: `${self.props.searchEntity}/${self.props.searchAttribute}`,
+                operator: self.props.searchMethod, value: self.searchInput.value
+            } ];
         }
-        self.searchInput.value.trim() ? datasource._constraints = constraints : datasource._constraints = "";
+        self.searchInput.value.trim() ? datasource._constraints = constraints : datasource._constraints = [];
         self.targetWidget.update();
     }
 
