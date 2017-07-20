@@ -1,4 +1,4 @@
-import { Component, Props, createElement } from "react";
+import { Component, createElement } from "react";
 import { findDOMNode } from "react-dom";
 
 import * as dijitRegistry from "dijit/registry";
@@ -6,12 +6,11 @@ import * as dijitRegistry from "dijit/registry";
 import { Alert } from "./Alert";
 import "../ui/OfflineSearch.css";
 
-type searchMethodOptions = "equals" | "lessThan" | "lessThanOrEquals" | "greaterThan" | "greaterThanOrEquals" | "contains";
+type SearchMethodOptions = "equals" | "contains";
 
 interface ListView extends mxui.widget._WidgetBase {
     _datasource: {
         _constraints: string | null;
-        _setsize: number;
         _setSize: number;
         atEnd: () => boolean;
         _pageSize: number;
@@ -22,13 +21,13 @@ interface ListView extends mxui.widget._WidgetBase {
     update: () => void;
 }
 
-interface OfflineSearchProps extends Props<OfflineSearch> {
+interface OfflineSearchProps {
     defaultQuery: string;
     searchEntity: string;
     searchAttribute: string;
-    showSearchBar: string;
+    showSearchBar: boolean;
     targetGridName: string;
-    searchMethod: searchMethodOptions;
+    searchMethod: SearchMethodOptions;
 }
 
 interface OfflineSearchState {
@@ -36,7 +35,7 @@ interface OfflineSearchState {
     buttonVisibility?: string;
 }
 
-class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
+export default class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
     // internal variables
     private searchButton: HTMLButtonElement;
     private searchInput: HTMLInputElement;
@@ -54,10 +53,11 @@ class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
     }
 
     render() {
-        return createElement("div", {
-            className: `widget-offline-search ${this.props.showSearchBar}`
-        },
-            createElement(Alert, { message: this.state.alertMessage }),
+        return (
+        createElement("div", { className: "widget-offline-search" },
+            createElement(Alert, { className: "danger", message: this.state.alertMessage }),
+            this.props.showSearchBar
+            ?
             createElement("div", { className: "search-container" },
                 createElement("span", { className: "glyphicon glyphicon-search" }),
                 createElement("input", {
@@ -71,50 +71,56 @@ class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
                     createElement("span", { className: "glyphicon glyphicon-remove" })
                 )
             )
-        );
+            : createElement("div", { className: "search-container-hidden" })
+        ));
     }
 
     componentDidMount() {
-        this.findTargetNode();
-        this.isValidWidget();
-        this.setUpEvents();
-        this.setDefaultSearch();
+        if (this.props.showSearchBar) {
+          this.findListView();
+          if (this.isValidWidget(this.targetWidget)) {
+            this.setUpEvents();
+            this.setDefaultSearch();
+          }
+        }
     }
 
     componentWillUnmount() {
-        this.searchButton.removeEventListener("click", this.onClear);
-        this.searchInput.removeEventListener("keyup", this.onSearchKeyDown);
+        if (this.props.showSearchBar) {
+            this.searchButton.removeEventListener("click", this.onClear);
+            this.searchInput.removeEventListener("keyup", this.onSearchKeyDown);
+        }
     }
 
-    private findTargetNode() {
+    private findListView() {
         let queryNode = findDOMNode(this).parentNode as HTMLElement;
         let targetNode: HTMLElement | null = null;
-        const targetName = this.props.targetGridName;
 
         while (!targetNode) {
-            targetNode = queryNode.querySelector(`.mx-name-${targetName}`) as HTMLElement;
+            targetNode = queryNode.querySelector(`.mx-name-${this.props.targetGridName}`) as HTMLElement;
             if (window.document.isEqualNode(queryNode)) break;
             queryNode = queryNode.parentNode as HTMLElement;
         }
 
         if (!targetNode) {
-            this.setState({ alertMessage: `search offline widget: unable to find grid with the name "${targetName}"` });
-        } else {
-            this.targetWidget = dijitRegistry.byNode(targetNode);
+            this.setState({ alertMessage: `search offline widget: unable to find grid with the name "${this.props.targetGridName}"` });
         }
+
+        this.targetWidget = targetNode ? dijitRegistry.byNode(targetNode) : null;
     }
 
-    private isValidWidget(): boolean {
-        if (this.targetWidget && this.targetWidget.declaredClass === "mxui.widget.ListView") {
-            if (this.targetWidget._onLoad
-                && this.targetWidget._loadMore
-                && this.targetWidget._renderData
-                && this.targetWidget._datasource
-                && this.targetWidget._datasource.atEnd
-                && typeof this.targetWidget._datasource._pageSize !== "undefined"
-                && (typeof this.targetWidget._datasource._setsize !== "undefined"
-                || typeof this.targetWidget._datasource._setSize !== "undefined")) {
-                    return true;
+    private isValidWidget(targetWidget: ListView): boolean {
+        if (targetWidget && targetWidget.declaredClass === "mxui.widget.ListView") {
+            if (
+                targetWidget._onLoad &&
+                targetWidget._loadMore &&
+                targetWidget._renderData &&
+                targetWidget._datasource &&
+                targetWidget._datasource.atEnd &&
+                typeof targetWidget._datasource._pageSize !== "undefined" &&
+                typeof targetWidget._datasource._setSize !== "undefined"
+            ) {
+                return true;
             } else {
                 this.setState({ alertMessage: "search offline widget: this Mendix version is incompatible with the offline search widget" });
             }
@@ -131,18 +137,14 @@ class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
     }
 
     private setDefaultSearch() {
-        if (this.isValidWidget()) {
-            this.searchInput.value = this.props.defaultQuery;
-            this.updateConstraints(this);
-        }
+        this.searchInput.value = this.props.defaultQuery;
+        this.updateConstraints(this);
     }
 
     private onSearchKeyDown(event: CustomEvent) {
-        if (this.isValidWidget()) {
-            this.updateButtonVisibility();
-            const searchTimeout = setTimeout(this.updateConstraints(this), 500);
-            clearTimeout(searchTimeout);
-        }
+        this.updateButtonVisibility();
+        const searchTimeout = setTimeout(this.updateConstraints(this), 500);
+        clearTimeout(searchTimeout);
     }
 
     private updateButtonVisibility() {
@@ -170,4 +172,3 @@ class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
         this.updateConstraints(this);
     }
 }
-export { OfflineSearch as default };

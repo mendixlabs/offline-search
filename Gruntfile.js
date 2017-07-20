@@ -22,10 +22,6 @@ module.exports = function(grunt) {
                 options: {
                     debounceDelay: 250
                 }
-            },
-            sourceFiles: {
-                "files": [ "./src/**/*" ],
-                "tasks": [ "copy:source" ]
             }
         },
 
@@ -63,6 +59,7 @@ module.exports = function(grunt) {
                 } ]
             }
         },
+
         file_append: {
             addSourceURL: {
                 files: [ {
@@ -71,6 +68,7 @@ module.exports = function(grunt) {
                 } ]
             }
         },
+
         webpack: {
             develop: webpackConfig,
             release: webpackConfigRelease
