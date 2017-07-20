@@ -16,10 +16,6 @@
             <description>Search method to use</description>
             <enumerationValues>
                 <enumerationValue key="equals">Equals</enumerationValue>
-                <enumerationValue key="lessThan">Less than</enumerationValue>
-                <enumerationValue key="lessThanOrEquals">Less than or equals</enumerationValue>
-                <enumerationValue key="greaterThan">Greater than</enumerationValue>
-                <enumerationValue key="greaterThanOrEquals">Greater than or equals</enumerationValue>
                 <enumerationValue key="contains">Contains</enumerationValue>
             </enumerationValues>
         </property>

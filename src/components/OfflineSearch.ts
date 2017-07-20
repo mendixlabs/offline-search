@@ -21,7 +21,7 @@ interface ListView extends mxui.widget._WidgetBase {
     update: () => void;
 }
 
-interface OfflineSearchProps {
+export interface OfflineSearchProps {
     defaultQuery: string;
     searchEntity: string;
     searchAttribute: string;
@@ -54,34 +54,34 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
 
     render() {
         return (
-        createElement("div", { className: "widget-offline-search" },
-            createElement(Alert, { className: "danger", message: this.state.alertMessage }),
-            this.props.showSearchBar
-            ?
-            createElement("div", { className: "search-container" },
-                createElement("span", { className: "glyphicon glyphicon-search" }),
-                createElement("input", {
-                    className: "form-control", placeholder: "Search",
-                    ref: input => this.searchInput = input as HTMLInputElement
-                }),
-                createElement("button", {
-                    className: `btn-transparent ${this.state.buttonVisibility}`,
-                    ref: button => this.searchButton = button as HTMLButtonElement
-                },
-                    createElement("span", { className: "glyphicon glyphicon-remove" })
-                )
-            )
-            : createElement("div", { className: "search-container-hidden" })
-        ));
+            createElement("div", { className: "widget-offline-search" },
+                createElement(Alert, { className: "danger", message: this.state.alertMessage }),
+                this.props.showSearchBar
+                    ?
+                    createElement("div", { className: "search-container" },
+                        createElement("span", { className: "glyphicon glyphicon-search" }),
+                        createElement("input", {
+                            className: "form-control", placeholder: "Search",
+                            ref: input => this.searchInput = input as HTMLInputElement
+                        }),
+                        createElement("button", {
+                            className: `btn-transparent ${this.state.buttonVisibility}`,
+                            ref: button => this.searchButton = button as HTMLButtonElement
+                        },
+                            createElement("span", { className: "glyphicon glyphicon-remove" })
+                        )
+                    )
+                    : createElement("div", { className: "search-container-hidden" })
+            ));
     }
 
     componentDidMount() {
         if (this.props.showSearchBar) {
-          this.findListView();
-          if (this.isValidWidget(this.targetWidget)) {
-            this.setUpEvents();
-            this.setDefaultSearch();
-          }
+            this.findListView();
+            if (this.isValidWidget(this.targetWidget)) {
+                this.setUpEvents();
+                this.setDefaultSearch();
+            }
         }
     }
 
@@ -162,7 +162,7 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
         if (this.props.searchEntity) {
             constraints = `[${self.props.searchMethod}(${self.props.searchEntity}/${self.props.searchAttribute},'${self.searchInput.value}')]`;
         }
-        self.searchInput.value.trim() ? datasource._constraints = constraints : datasource._constraints = null;
+        self.searchInput.value.trim() ? datasource._constraints = constraints : datasource._constraints = "";
         self.targetWidget.update();
     }
 
