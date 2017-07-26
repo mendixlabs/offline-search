@@ -1,22 +1,25 @@
 import { Component, createElement } from "react";
-import OfflineSearch, { OfflineSearchProps } from "./components/OfflineSearch";
+import { SearchBar, SearchBarProps } from "./components/SearchBar";
 
 declare function require(name: string): string;
 
 // tslint:disable-next-line class-name
-export class preview extends Component<OfflineSearchProps, {}> {
+export class preview extends Component<SearchBarProps, {}> {
     render() {
-        return createElement(OfflineSearch, this.transformProps(this.props));
+        return (
+            createElement("div", { className: "widget-offline-search" },
+                createElement(SearchBar, this.transformProps(this.props))
+            )
+        );
     }
 
-    private transformProps(props: OfflineSearchProps): OfflineSearchProps {
+    private transformProps(props: SearchBarProps): SearchBarProps {
         return {
             defaultQuery: props.defaultQuery,
             searchAttributes: props.searchAttributes,
             searchEntity: props.searchEntity,
             searchMethod: props.searchMethod,
-            showSearchBar: props.showSearchBar,
-            targetGridName: props.targetGridName
+            showSearchBar: props.showSearchBar
         };
     }
 }
