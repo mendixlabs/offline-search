@@ -38,7 +38,7 @@
     "no-var-keyword": true,
     "max-line-length": [
       true,
-      150
+      155
     ],
     "one-line": [
       true,

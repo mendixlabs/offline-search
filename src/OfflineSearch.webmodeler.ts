@@ -12,7 +12,7 @@ export class preview extends Component<OfflineSearchProps, {}> {
     private transformProps(props: OfflineSearchProps): OfflineSearchProps {
         return {
             defaultQuery: props.defaultQuery,
-            searchAttribute: props.searchAttribute,
+            searchAttributes: props.searchAttributes,
             searchEntity: props.searchEntity,
             searchMethod: props.searchMethod,
             showSearchBar: props.showSearchBar,

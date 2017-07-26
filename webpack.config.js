@@ -51,7 +51,7 @@ const previewConfig = {
     module: {
         rules: [
             { test: /\.ts$/, use: "ts-loader" },
-            { test: /\.css$/, use: "css-loader" }
+            { test: /\.css$/, loader: "raw-loader" }
         ]
     },
     devtool: "inline-source-map",

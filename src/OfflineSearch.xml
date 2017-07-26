@@ -6,7 +6,7 @@
 
     <properties>
         <property key="targetGridName" type="string" required="true" defaultValue="">
-            <caption>Grid name</caption>
+            <caption>List view name</caption>
             <category>Data source</category>
             <description>The name of the grid on this page</description>
         </property>
@@ -20,14 +20,21 @@
             </enumerationValues>
         </property>
         <property key="searchEntity" type="string" required="false">
-            <caption>Grid entity</caption>
+            <caption>List view entity</caption>
             <category>Data source</category>
              <description>The type of objects in the grid</description>
         </property>
-        <property key="searchAttribute" type="string" required="false">
-            <caption>Search attribute</caption>
+        <property key="searchAttributes" type="object" isList="true" required="false">
+            <caption>Search attributes</caption>
             <category>Data source</category>
-            <description>The search attribute on the search entity</description>
+            <description>The search attributes on the search entity</description>
+            <properties>
+                <property key="name" type="string" required="false">
+                    <caption>Attribute name</caption>
+                    <category>Attribute</category>
+                    <description>Attribute on the list view datasource entity or list view search entity</description>
+                </property>
+            </properties>
         </property>
         <property key="defaultQuery" type="translatableString" required="false">
             <caption>Default query</caption>

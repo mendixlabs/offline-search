@@ -6,7 +6,7 @@ import { Alert } from "./Alert";
 import "../ui/OfflineSearch.css";
 
 type SearchMethodOptions = "equals" | "contains";
-type HybridConstraint = Array<{ attribute: string; operator: string; value: string; path?: string }>;
+type HybridConstraint = Array<{ attribute: string; operator: string; value: string; path?: string; }>;
 
 interface ListView extends mxui.widget._WidgetBase {
     _datasource: {
@@ -24,7 +24,7 @@ interface ListView extends mxui.widget._WidgetBase {
 export interface OfflineSearchProps {
     defaultQuery: string;
     searchEntity: string;
-    searchAttribute: string;
+    searchAttributes: Array<{ name: string }>;
     showSearchBar: boolean;
     targetGridName: string;
     searchMethod: SearchMethodOptions;
@@ -125,7 +125,7 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
                 this.setState({ alertMessage: "search offline widget: this Mendix version is incompatible with the offline search widget" });
             }
         } else {
-            this.setState({ alertMessage: `search offline widget: supplied target name "${this.props.targetGridName}" is not of the type listview` });
+            this.setState({ alertMessage: `search offline widget: supplied target name "${this.props.targetGridName}" is not of the type list view` });
         }
 
         return false;
@@ -157,26 +157,37 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
 
     private updateConstraints(self: OfflineSearch) {
         const datasource = self.targetWidget._datasource;
-        let constraints: HybridConstraint | string;
-
         if (window.device) {
-            constraints = [ { attribute: self.props.searchAttribute, operator: self.props.searchMethod, value: self.searchInput.value } ];
-            if (this.props.searchEntity) {
-                constraints = [ {
-                    attribute: self.props.searchAttribute,
-                    operator: self.props.searchMethod,
-                    path: self.props.searchEntity,
-                    value: self.searchInput.value
-                } ];
-            }
+            const constraints: HybridConstraint = [];
+            self.props.searchAttributes.forEach(searchAttribute => {
+                if (this.props.searchEntity) {
+                    constraints.push({
+                        attribute: searchAttribute.name,
+                        operator: self.props.searchMethod,
+                        path: self.props.searchEntity,
+                        value: self.searchInput.value
+                    });
+                } else {
+                    constraints.push({
+                        attribute: searchAttribute.name,
+                        operator: self.props.searchMethod,
+                        value: self.searchInput.value
+                    });
+                }
+            });
             self.searchInput.value.trim() ? datasource._constraints = constraints : datasource._constraints = [];
         } else {
-            constraints = `[${self.props.searchMethod}(${self.props.searchAttribute},'${self.searchInput.value}')]`;
-            if (this.props.searchEntity) {
-                constraints = `[${self.props.searchEntity}[${self.props.searchMethod}(${self.props.searchAttribute},'${self.searchInput.value}')]]`;
-            }
-            self.searchInput.value.trim() ? datasource._constraints = constraints : datasource._constraints = "";
+            const constraints: string[] = [];
+            self.props.searchAttributes.forEach(searchAttribute => {
+                this.props.searchEntity
+                    ?
+                    constraints.push(`${self.props.searchEntity}[${self.props.searchMethod}(${searchAttribute.name},'${self.searchInput.value}')]`)
+                    :
+                    constraints.push(`${self.props.searchMethod}(${searchAttribute.name},'${self.searchInput.value}')`);
+            });
+            self.searchInput.value.trim() ? datasource._constraints = "[" + constraints.join(" or ") + "]" : datasource._constraints = "";
         }
+
         self.targetWidget.update();
     }
 
