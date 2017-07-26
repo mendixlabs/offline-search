@@ -7,6 +7,7 @@ It supports searching on single field similar to the built-in list view search c
 * Search through a single field
 * Open search in default
 * Hide / Show search bar
+* When the list view is not specified, the widget will pick the closest one.
 
 ## Limitations
 Supports only list views

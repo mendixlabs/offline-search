@@ -76,7 +76,12 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
         let targetWidget: ListView;
 
         while (!targetNode) {
-            targetNode = queryNode.querySelector(`.mx-name-${this.props.targetGridName}`) as HTMLElement;
+            this.props.targetGridName
+                ?
+                targetNode = queryNode.querySelector(`.mx-name-${this.props.targetGridName}`) as HTMLElement
+                :
+                targetNode = queryNode.querySelectorAll(`.mx-listview`)[0] as HTMLElement;
+
             if (window.document.isEqualNode(queryNode)) break;
             queryNode = queryNode.parentNode as HTMLElement;
         }
@@ -96,7 +101,7 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
                     typeof targetWidget._datasource._pageSize !== "undefined" &&
                     typeof targetWidget._datasource._setSize !== "undefined"
                 ) {
-                    this.setState({ targetWidget: targetNode ? dijitRegistry.byNode(targetNode) : null });
+                    this.setState({ targetWidget: dijitRegistry.byNode(targetNode) });
                 } else {
                     this.setState({ alertMessage: "search offline widget: this Mendix version is incompatible with the offline search widget" });
                 }
