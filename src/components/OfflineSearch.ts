@@ -1,6 +1,7 @@
 import { Component, createElement } from "react";
 import { findDOMNode } from "react-dom";
 import * as dijitRegistry from "dijit/registry";
+
 import { SearchBar } from "./SearchBar";
 import { Alert } from "./Alert";
 import "../ui/OfflineSearch.css";
@@ -51,7 +52,7 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
     render() {
         return (
             createElement("div", { className: "widget-offline-search" },
-                createElement(Alert, { className: "danger", message: this.state.alertMessage }),
+                createElement(Alert, { bootstrapStyle: "danger", message: this.state.alertMessage }),
                 createElement(SearchBar, {
                     defaultQuery: this.props.defaultQuery,
                     listView: this.state.targetWidget,
@@ -74,6 +75,7 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
         let queryNode = findDOMNode(this).parentNode as HTMLElement;
         let targetNode: HTMLElement | null = null;
         let targetWidget: ListView;
+        let alertMessage = "";
 
         while (!targetNode) {
             this.props.targetGridName
@@ -87,7 +89,7 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
         }
 
         if (!targetNode) {
-            this.setState({ alertMessage: `search offline widget: unable to find grid with the name "${this.props.targetGridName}"` });
+            alertMessage = `search offline widget: unable to find grid with the name "${this.props.targetGridName}"`;
         } else {
             targetWidget = dijitRegistry.byNode(targetNode);
 
@@ -101,13 +103,14 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
                     typeof targetWidget._datasource._pageSize !== "undefined" &&
                     typeof targetWidget._datasource._setSize !== "undefined"
                 ) {
-                    this.setState({ targetWidget: dijitRegistry.byNode(targetNode) });
+                    this.setState({ targetWidget });
                 } else {
-                    this.setState({ alertMessage: "search offline widget: this Mendix version is incompatible with the offline search widget" });
+                    alertMessage = "search offline widget: this Mendix version is incompatible with the offline search widget";
                 }
             } else {
-                this.setState({ alertMessage: `search offline widget: supplied target name "${this.props.targetGridName}" is not of the type list view` });
+                alertMessage = `search offline widget: supplied target name "${this.props.targetGridName}" is not of the type list view`;
             }
         }
+        this.setState({ alertMessage });
     }
 }
