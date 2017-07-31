@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@types/big.js": "0.0.31",
+    "@types/classnames": "0.0.32",
     "@types/dojo": "^1.9.35",
     "@types/react": "^15.0.16",
     "@types/react-dom": "^0.14.23",
@@ -54,5 +55,8 @@
     "webpack": "^2.3.1",
     "webpack-dev-server": "^2.2.0",
     "webpack-merge": "^4.1.0"
+  },
+  "dependencies": {
+    "classnames": "^2.2.5"
   }
 }
