@@ -2,6 +2,9 @@ import { Component, createElement } from "react";
 import { SearchBar, SearchBarProps } from "./components/SearchBar";
 
 declare function require(name: string): string;
+type VisibilityMap = {
+    [P in keyof SearchBarProps]: boolean;
+};
 
 // tslint:disable-next-line class-name
 export class preview extends Component<SearchBarProps, {}> {
@@ -23,6 +26,11 @@ export class preview extends Component<SearchBarProps, {}> {
             showSearchBar: props.showSearchBar
         };
     }
+}
+
+export function getVisibleProperties(valueMap: SearchBarProps, visibilityMap: VisibilityMap) {
+    visibilityMap.showSearchBar = false;
+    return visibilityMap;
 }
 
 export function getPreviewCss() {
