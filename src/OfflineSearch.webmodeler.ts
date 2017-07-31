@@ -1,5 +1,9 @@
 import { Component, createElement } from "react";
+import { findDOMNode } from "react-dom";
+
+import { OfflineSearchProps, OfflineSearchState } from "./components/OfflineSearch";
 import { SearchBar, SearchBarProps } from "./components/SearchBar";
+import { ValidateConfigs } from "./components/ValidateConfigs";
 
 declare function require(name: string): string;
 type VisibilityMap = {
@@ -7,13 +11,26 @@ type VisibilityMap = {
 };
 
 // tslint:disable-next-line class-name
-export class preview extends Component<SearchBarProps, {}> {
+export class preview extends Component<OfflineSearchProps, OfflineSearchState> {
     render() {
-        return (
-            createElement("div", { className: "widget-offline-search" },
-                createElement(SearchBar, this.transformProps(this.props))
-            )
+        return createElement("div", { className: "widget-offline-search" },
+            createElement(ValidateConfigs, {
+                inWebModeler: true,
+                queryNode: this.state.targetNode,
+                targetGrid: this.state.targetGrid,
+                targetGridName: this.props.targetGridName
+            }),
+            createElement(SearchBar, this.transformProps(this.props))
         );
+    }
+
+    componentDidMount() {
+        const queryNode = findDOMNode(this).parentNode as HTMLElement;
+        const targetNode = ValidateConfigs.findTargetNode(this.props, queryNode);
+
+        if (targetNode) {
+            this.setState({ targetNode });
+        }
     }
 
     private transformProps(props: SearchBarProps): SearchBarProps {
@@ -29,7 +46,7 @@ export class preview extends Component<SearchBarProps, {}> {
 }
 
 export function getVisibleProperties(valueMap: SearchBarProps, visibilityMap: VisibilityMap) {
-    visibilityMap.showSearchBar = false;
+    valueMap.showSearchBar = visibilityMap.showSearchBar = false;
     return visibilityMap;
 }
 

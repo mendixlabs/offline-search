@@ -1,6 +1,6 @@
 # Offline search
 
-Add an interactive search box to all of your grids, even offline!
+Add an interactive search box to your list view, even offline!
 It supports searching on single field similar to the built-in list view search capabilities.
 
 ## Features
@@ -19,11 +19,11 @@ The following data types are supported:
  - Enumeration
  - AutoNumber
 
-Due to current platform constraints, the offline widget cannot search on multiple fields or over associations.
+Due to current platform constraints, the offline widget cannot search on multiple fields.
 
 
 ## Dependencies
-Mendix 7.3
+Mendix 7.4
 
 ## Demo project
 
@@ -34,19 +34,22 @@ Mendix 7.3
 ![Searching](/assets/LV_Searching_Offline.jpg)
 
 ## Usage
-![Data source](/assets/Datasource.png)
-![Appearance](/assets/Appearance.png)
 
- ### Data source configuration
- - On the `Grid name` option of the `Data source` tab, input the "name" property of the list widget you want to search in.
- - On the `Search method` option of the `Data source` tab, select the search name that you will to
-to use to constrain the data on the grid.
- - On the `Grid entity` option of the `Data source` tab, input the name of the entity to be used in the filter.
- the entity shown in the list widget. You must enter the value as: `ModuleName.EntityName`
- - On the `Search attribute` option of the `Data source` tab, input the name of the field or attribute on the list widget entity to be searched.
- You must enter the name of the attribute manually, exactly as it appears in the domain model.
- - On the `Default query` option of the `Data source` tab, input the name of default query to be used when the when the
- widget is first launched for the first time.
+### Data source configuration
+
+![Data source](/assets/Datasource.png)
+ - On the `List view name` option of the `Data source` tab, input the "name" property of the list widget you want to search in.
+ - On the `Search method` option of the `Data source` tab, select the search name that you will use to constrain the data on the grid.
+ - On the `List view entity` option of the `Data source` tab, input the name of the entity to be used in the filter. The entity shown in the list widget. You must enter the value as: `ModuleName.EntityName`
+ - On the `Search attribute` option of the `Data source` tab, input the name of the field or attribute on the list widget entity to be searched. You must enter the name of the attribute manually, exactly as it appears in the domain model.
+ - On the `Default query` option of the `Data source` tab, input the name of default query to be used when the when the widget is first launched for the first time.
+
+### Data source configuration
+
+![Appearance](/assets/Appearance.png)
+ - On the `Show search bar` option of the `Appearance` tab, select `yes` or `no` for visibility of the widget.
+ - On the `Place holder` option of the `Appearance` tab, input the place holder name that you will to
+to use to constrain the data on the grid that will shown to the user to indicate what kind of input that is expected
 
 ## Issues, suggestions and feature requests
 Please report issues at [https://github.com/mendixlabs/offline-search/issues](https://github.com/mendixlabs/offline-search/issues).

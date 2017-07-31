@@ -6,11 +6,10 @@ export interface SearchBarProps extends WrapperProps {
 }
 
 interface SearchBarState {
-    buttonVisibility?: string;
+    hasQuery?: boolean;
 }
 
 export class SearchBar extends Component<SearchBarProps, SearchBarState> {
-    // internal variables
     private searchButton: HTMLButtonElement;
     private searchInput: HTMLInputElement;
 
@@ -18,35 +17,37 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
         super(props);
 
         this.state = {
-            buttonVisibility: "hidden"
+            hasQuery: props.defaultQuery ? true : false
         };
         this.onClear = this.onClear.bind(this);
         this.onSearchKeyDown = this.onSearchKeyDown.bind(this);
+        this.updateConstraints = this.updateConstraints.bind(this);
     }
 
     render() {
-        return this.props.showSearchBar
-            ?
-            createElement("div", { className: "search-container" },
+        if (this.props.showSearchBar) {
+            return createElement("div", { className: "search-container" },
                 createElement("span", { className: "glyphicon glyphicon-search" }),
                 createElement("input", {
                     className: "form-control", placeholder: this.props.placeHolder ? this.props.placeHolder : "Search",
                     ref: input => this.searchInput = input as HTMLInputElement
                 }),
                 createElement("button", {
-                    className: `btn-transparent ${this.state.buttonVisibility}`,
+                    className: `btn-transparent ${this.state.hasQuery ? "visible" : "hidden"}`,
                     ref: button => this.searchButton = button as HTMLButtonElement
                 },
                     createElement("span", { className: "glyphicon glyphicon-remove" })
                 )
-            )
-            : createElement("div", { className: "search-container-hidden" });
+            );
+        } else {
+            return null;
+        }
     }
 
     componentWillReceiveProps(nextProps: SearchBarProps) {
-        if (this.props.showSearchBar && this.props.listView) {
+        if (nextProps.showSearchBar && nextProps.listView) {
             this.setUpEvents();
-            this.setDefaultSearch(this.props.defaultQuery);
+            this.setDefaultSearch(nextProps.defaultQuery);
         }
     }
 
@@ -64,60 +65,62 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
 
     private setDefaultSearch(query: string) {
         this.searchInput.value = query;
-        this.updateConstraints(this);
+        this.updateConstraints(this.props);
     }
 
-    private onSearchKeyDown(event: CustomEvent) {
+    private onSearchKeyDown() {
         this.updateButtonVisibility();
-        const searchTimeout = setTimeout(this.updateConstraints(this), 500);
-        clearTimeout(searchTimeout);
+        setTimeout((done) => {
+            this.updateConstraints(this.props);
+            done();
+        }, 500);
     }
 
     private updateButtonVisibility() {
         if (this.searchInput.value.trim()) {
-            this.setState({ buttonVisibility: "visible" });
+            this.setState({ hasQuery: true });
         } else {
-            this.setState({ buttonVisibility: "hidden" });
+            this.setState({ hasQuery: false });
         }
     }
 
-    private updateConstraints(self: SearchBar) {
-        if (self.props.listView) {
-            const datasource = self.props.listView._datasource;
+    private updateConstraints(props: SearchBarProps) {
+        if (props.listView && props.listView._datasource) {
+            const datasource = props.listView._datasource;
             if (window.device) {
                 const constraints: HybridConstraint = [];
-                if (this.props.searchEntity) {
+                if (props.searchEntity) {
                     constraints.push({
-                        attribute: self.props.searchAttribute,
-                        operator: self.props.searchMethod,
-                        path: self.props.searchEntity,
-                        value: self.searchInput.value
+                        attribute: props.searchAttribute,
+                        operator: props.searchMethod,
+                        path: props.searchEntity,
+                        value: this.searchInput.value
                     });
                 } else {
                     constraints.push({
-                        attribute: self.props.searchAttribute,
-                        operator: self.props.searchMethod,
-                        value: self.searchInput.value
+                        attribute: props.searchAttribute,
+                        operator: props.searchMethod,
+                        value: this.searchInput.value
                     });
                 }
-                self.searchInput.value.trim() ? datasource._constraints = constraints : datasource._constraints = [];
+                datasource._constraints = this.searchInput.value.trim() ? constraints : [];
             } else {
                 const constraints: string[] = [];
-                this.props.searchEntity
+                props.searchEntity
                     ?
-                    constraints.push(`${self.props.searchEntity}[${self.props.searchMethod}(${self.props.searchAttribute},'${self.searchInput.value}')]`)
+                    constraints.push(`${props.searchEntity}[${props.searchMethod}(${props.searchAttribute},'${this.searchInput.value}')]`)
                     :
-                    constraints.push(`${self.props.searchMethod}(${self.props.searchAttribute},'${self.searchInput.value}')`);
-                self.searchInput.value.trim() ? datasource._constraints = "[" + constraints.join(" or ") + "]" : datasource._constraints = "";
+                    constraints.push(`${props.searchMethod}(${props.searchAttribute},'${this.searchInput.value}')`);
+                datasource._constraints = this.searchInput.value.trim() ? "[" + constraints.join(" or ") + "]" : "";
             }
 
-            self.props.listView.update();
+            props.listView.update();
         }
     }
 
-    private onClear(event: CustomEvent) {
+    private onClear() {
         this.searchInput.value = "";
         this.updateButtonVisibility();
-        this.updateConstraints(this);
+        this.updateConstraints(this.props);
     }
 }
