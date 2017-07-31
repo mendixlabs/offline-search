@@ -16,7 +16,8 @@ export class preview extends Component<SearchBarProps, {}> {
     private transformProps(props: SearchBarProps): SearchBarProps {
         return {
             defaultQuery: props.defaultQuery,
-            searchAttributes: props.searchAttributes,
+            placeHolder: props.placeHolder,
+            searchAttribute: props.searchAttribute,
             searchEntity: props.searchEntity,
             searchMethod: props.searchMethod,
             showSearchBar: props.showSearchBar

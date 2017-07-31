@@ -30,7 +30,7 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
             createElement("div", { className: "search-container" },
                 createElement("span", { className: "glyphicon glyphicon-search" }),
                 createElement("input", {
-                    className: "form-control", placeholder: "Search",
+                    className: "form-control", placeholder: this.props.placeHolder ? this.props.placeHolder : "Search",
                     ref: input => this.searchInput = input as HTMLInputElement
                 }),
                 createElement("button", {
@@ -86,32 +86,28 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
             const datasource = self.props.listView._datasource;
             if (window.device) {
                 const constraints: HybridConstraint = [];
-                self.props.searchAttributes.forEach(searchAttribute => {
-                    if (this.props.searchEntity) {
-                        constraints.push({
-                            attribute: searchAttribute.name,
-                            operator: self.props.searchMethod,
-                            path: self.props.searchEntity,
-                            value: self.searchInput.value
-                        });
-                    } else {
-                        constraints.push({
-                            attribute: searchAttribute.name,
-                            operator: self.props.searchMethod,
-                            value: self.searchInput.value
-                        });
-                    }
-                });
+                if (this.props.searchEntity) {
+                    constraints.push({
+                        attribute: self.props.searchAttribute,
+                        operator: self.props.searchMethod,
+                        path: self.props.searchEntity,
+                        value: self.searchInput.value
+                    });
+                } else {
+                    constraints.push({
+                        attribute: self.props.searchAttribute,
+                        operator: self.props.searchMethod,
+                        value: self.searchInput.value
+                    });
+                }
                 self.searchInput.value.trim() ? datasource._constraints = constraints : datasource._constraints = [];
             } else {
                 const constraints: string[] = [];
-                self.props.searchAttributes.forEach(searchAttribute => {
-                    this.props.searchEntity
-                        ?
-                        constraints.push(`${self.props.searchEntity}[${self.props.searchMethod}(${searchAttribute.name},'${self.searchInput.value}')]`)
-                        :
-                        constraints.push(`${self.props.searchMethod}(${searchAttribute.name},'${self.searchInput.value}')`);
-                });
+                this.props.searchEntity
+                    ?
+                    constraints.push(`${self.props.searchEntity}[${self.props.searchMethod}(${self.props.searchAttribute},'${self.searchInput.value}')]`)
+                    :
+                    constraints.push(`${self.props.searchMethod}(${self.props.searchAttribute},'${self.searchInput.value}')`);
                 self.searchInput.value.trim() ? datasource._constraints = "[" + constraints.join(" or ") + "]" : datasource._constraints = "";
             }
 

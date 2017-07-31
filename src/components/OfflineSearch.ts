@@ -11,8 +11,9 @@ export type HybridConstraint = Array<{ attribute: string; operator: string; valu
 
 export interface WrapperProps {
     defaultQuery: string;
+    placeHolder: string;
     searchEntity: string;
-    searchAttributes: Array<{ name: string }>;
+    searchAttribute: string;
     showSearchBar: boolean;
     searchMethod: SearchMethodOptions;
 }
@@ -56,7 +57,8 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
                 createElement(SearchBar, {
                     defaultQuery: this.props.defaultQuery,
                     listView: this.state.targetWidget,
-                    searchAttributes: this.props.searchAttributes,
+                    placeHolder: this.props.placeHolder,
+                    searchAttribute: this.props.searchAttribute,
                     searchEntity: this.props.searchEntity,
                     searchMethod: this.props.searchMethod,
                     showSearchBar: this.props.showSearchBar
