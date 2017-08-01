@@ -1,4 +1,4 @@
-import { Component, createElement } from "react";
+import { Component, FormEvent, createElement } from "react";
 import { HybridConstraint, ListView, WrapperProps } from "./OfflineSearch";
 
 export interface SearchBarProps extends WrapperProps {
@@ -14,10 +14,10 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
     constructor(props: SearchBarProps) {
         super(props);
 
-        this.state = {
-            query: ""
-        };
+        this.state = { query: "" };
         this.updateConstraints = this.updateConstraints.bind(this);
+        this.updateQuery = this.updateQuery.bind(this);
+        this.resetQuery = this.resetQuery.bind(this);
     }
 
     render() {
@@ -26,14 +26,15 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
                 createElement("span", { className: "glyphicon glyphicon-search" }),
                 createElement("input", {
                     className: "form-control",
-                    onChange: (event: React.FormEvent<HTMLInputElement>) => this.setState({ query: event.currentTarget.value as string }),
+                    onChange: this.updateQuery,
                     placeholder: this.props.placeHolder ? this.props.placeHolder : "Search",
                     value: this.state.query
                 }),
-                createElement("button", {
-                    className: `btn-transparent ${this.state.query ? "visible" : "hidden"}`,
-                    onClick: () => this.setState({ query: "" })
-                },
+                createElement("button",
+                    {
+                        className: `btn-transparent ${this.state.query ? "visible" : "hidden"}`,
+                        onClick: this.resetQuery
+                    },
                     createElement("span", { className: "glyphicon glyphicon-remove" })
                 )
             );
@@ -55,26 +56,26 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
         }
     }
 
+    private updateQuery(event: FormEvent<HTMLInputElement>) {
+        this.setState({ query: event.currentTarget.value });
+    }
+
+    private resetQuery() {
+        this.setState({ query: "" });
+    }
+
     private updateConstraints() {
         let constraints: HybridConstraint | string = [];
 
         if (this.props.listView && this.props.listView._datasource) {
             const datasource = this.props.listView._datasource;
             if (window.device) {
-                if (this.props.searchEntity) {
-                    constraints.push({
-                        attribute: this.props.searchAttribute,
-                        operator: this.props.searchMethod,
-                        path: this.props.searchEntity,
-                        value: this.state.query
-                    });
-                } else {
-                    constraints.push({
-                        attribute: this.props.searchAttribute,
-                        operator: this.props.searchMethod,
-                        value: this.state.query
-                    });
-                }
+                constraints.push({
+                    attribute: this.props.searchAttribute,
+                    operator: this.props.searchMethod,
+                    path: this.props.searchEntity,
+                    value: this.state.query
+                });
                 datasource._constraints = this.state.query ? constraints : [];
             } else {
                 constraints = this.props.searchEntity

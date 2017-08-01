@@ -12,15 +12,20 @@ type VisibilityMap = {
 
 // tslint:disable-next-line class-name
 export class preview extends Component<OfflineSearchProps, OfflineSearchState> {
+    constructor(props: OfflineSearchProps) {
+        super(props);
+
+        this.state = { findingWidget: true };
+    }
     render() {
         return createElement("div", { className: "widget-offline-search" },
             createElement(ValidateConfigs, {
                 inWebModeler: true,
                 queryNode: this.state.targetNode,
-                targetGrid: this.state.targetGrid,
-                targetGridName: this.props.targetGridName
+                targetGridName: this.props.targetGridName,
+                validate: !this.state.findingWidget
             }),
-            createElement(SearchBar, this.transformProps(this.props))
+            createElement(SearchBar, this.props)
         );
     }
 
@@ -28,25 +33,13 @@ export class preview extends Component<OfflineSearchProps, OfflineSearchState> {
         const queryNode = findDOMNode(this).parentNode as HTMLElement;
         const targetNode = ValidateConfigs.findTargetNode(this.props, queryNode);
 
-        if (targetNode) {
-            this.setState({ targetNode });
-        }
-    }
-
-    private transformProps(props: SearchBarProps): SearchBarProps {
-        return {
-            defaultQuery: props.defaultQuery,
-            placeHolder: props.placeHolder,
-            searchAttribute: props.searchAttribute,
-            searchEntity: props.searchEntity,
-            searchMethod: props.searchMethod,
-            showSearchBar: props.showSearchBar
-        };
+        this.setState({ findingWidget: false, targetNode });
     }
 }
 
 export function getVisibleProperties(valueMap: SearchBarProps, visibilityMap: VisibilityMap) {
     valueMap.showSearchBar = visibilityMap.showSearchBar = false;
+
     return visibilityMap;
 }
 

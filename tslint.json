@@ -138,7 +138,8 @@
     ],
     "curly": false,
     "arrow-parens": false,
-    "linebreak-style": [ true, "LF" ]
+    "linebreak-style": [ true, "LF" ],
+    "array-type": false
   },
   "jsRules": {
     "trailing-comma": [

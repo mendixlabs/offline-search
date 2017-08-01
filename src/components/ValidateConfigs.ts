@@ -1,24 +1,22 @@
 import { Component, createElement } from "react";
-import { ListView, OfflineSearchProps } from "./OfflineSearch";
 import { Alert } from "./Alert";
+import { ListView, OfflineSearchProps } from "./OfflineSearch";
 
 export interface ValidateConfigProps {
     inWebModeler?: boolean;
     queryNode?: HTMLElement;
     targetGrid?: ListView;
     targetGridName: string;
+    validate: boolean;
 }
 
 export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
     render() {
-        const message = ValidateConfigs.validate(this.props);
-
-        if (message) {
-            const alertClassName = "widget-offline-search-alert";
-            return createElement(Alert, { bootstrapStyle: "danger", className: alertClassName, message });
-        }
-
-        return null;
+        return createElement(Alert, {
+            bootstrapStyle: "danger",
+            className: "widget-offline-search-alert",
+            message: this.props.validate ? ValidateConfigs.validate(this.props) : ""
+        });
     }
 
     static validate(props: ValidateConfigProps): string {
@@ -36,18 +34,14 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
     }
 
     static isCompatible(targetGrid: ListView): boolean {
-        if (targetGrid &&
+        return !!(targetGrid &&
             targetGrid._onLoad &&
             targetGrid._loadMore &&
             targetGrid._renderData &&
             targetGrid._datasource &&
             targetGrid._datasource.atEnd &&
             typeof targetGrid._datasource._pageSize !== "undefined" &&
-            typeof targetGrid._datasource._setSize !== "undefined") {
-            return true;
-        }
-
-        return false;
+            typeof targetGrid._datasource._setSize !== "undefined");
     }
 
     static findTargetNode(props: OfflineSearchProps, queryNode: HTMLElement): HTMLElement {
@@ -61,6 +55,7 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
             if (window.document.isEqualNode(queryNode)) break;
             queryNode = queryNode.parentNode as HTMLElement;
         }
+
         return targetNode;
     }
 }

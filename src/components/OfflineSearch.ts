@@ -7,7 +7,7 @@ import { ValidateConfigs } from "./ValidateConfigs";
 import "../ui/OfflineSearch.css";
 
 export type SearchMethodOptions = "equals" | "contains";
-export type HybridConstraint = Array<{ attribute: string; operator: string; value: string; path?: string; }>;
+export type HybridConstraint = { attribute: string; operator: string; value: string; path?: string; }[];
 
 export interface WrapperProps {
     defaultQuery: string;
@@ -26,6 +26,7 @@ export interface OfflineSearchState {
     alertMessage?: string;
     targetGrid?: ListView;
     targetNode?: HTMLElement;
+    findingWidget: boolean;
 }
 
 export interface ListView extends mxui.widget._WidgetBase {
@@ -47,8 +48,7 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
 
         this.state = {
             alertMessage: "",
-            targetGrid: undefined,
-            targetNode: undefined
+            findingWidget: true
         };
     }
 
@@ -57,16 +57,12 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
             createElement(ValidateConfigs, {
                 queryNode: this.state.targetNode,
                 targetGrid: this.state.targetGrid,
-                targetGridName: this.props.targetGridName
+                targetGridName: this.props.targetGridName,
+                validate: !this.state.findingWidget
             }),
             createElement(SearchBar, {
-                defaultQuery: this.props.defaultQuery,
-                listView: this.state.targetGrid,
-                placeHolder: this.props.placeHolder,
-                searchAttribute: this.props.searchAttribute,
-                searchEntity: this.props.searchEntity,
-                searchMethod: this.props.searchMethod,
-                showSearchBar: this.props.showSearchBar
+                ... this.props as WrapperProps,
+                listView: this.state.targetGrid
             })
         );
     }
@@ -74,13 +70,12 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
     componentDidMount() {
         const queryNode = findDOMNode(this).parentNode as HTMLElement;
         const targetNode = ValidateConfigs.findTargetNode(this.props, queryNode);
+        let targetGrid: any;
 
         if (targetNode) {
-            this.setState({ targetNode });
-            const targetGrid = dijitRegistry.byNode(targetNode);
-            if (targetGrid) {
-                this.setState({ targetGrid });
-            }
+            targetGrid = dijitRegistry.byNode(targetNode);
         }
+
+        this.setState({ findingWidget: false, targetNode, targetGrid });
     }
 }
