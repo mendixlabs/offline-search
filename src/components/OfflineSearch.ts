@@ -55,6 +55,7 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
     render() {
         return createElement("div", { className: "widget-offline-search" },
             createElement(ValidateConfigs, {
+                ...this.props as OfflineSearchProps,
                 queryNode: this.state.targetNode,
                 targetGrid: this.state.targetGrid,
                 targetGridName: this.props.targetGridName,
@@ -70,12 +71,16 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
     componentDidMount() {
         const queryNode = findDOMNode(this).parentNode as HTMLElement;
         const targetNode = ValidateConfigs.findTargetNode(this.props, queryNode);
-        let targetGrid: any;
+        let targetGrid: ListView | null = null;
 
         if (targetNode) {
+            this.setState({ targetNode });
             targetGrid = dijitRegistry.byNode(targetNode);
+            if (targetGrid) {
+                this.setState({ targetGrid });
+            }
         }
 
-        this.setState({ findingWidget: false, targetNode, targetGrid });
+        this.setState({ findingWidget: false });
     }
 }

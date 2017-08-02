@@ -2,7 +2,7 @@ import { Component, createElement } from "react";
 import { Alert } from "./Alert";
 import { ListView, OfflineSearchProps } from "./OfflineSearch";
 
-export interface ValidateConfigProps {
+export interface ValidateConfigProps extends OfflineSearchProps {
     inWebModeler?: boolean;
     queryNode?: HTMLElement;
     targetGrid?: ListView;
@@ -44,15 +44,15 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
             typeof targetGrid._datasource._setSize !== "undefined");
     }
 
-    static findTargetNode(props: OfflineSearchProps, queryNode: HTMLElement): HTMLElement {
-        let targetNode: HTMLElement | null = null;
+    static findTargetNode(props: OfflineSearchProps, queryNode: HTMLElement): HTMLElement | null {
+        let targetNode: HTMLElement | null = null ;
 
-        while (!targetNode) {
+        while (!targetNode && queryNode) {
             targetNode = props.targetGridName
                 ? queryNode.querySelector(`.mx-name-${props.targetGridName}`) as HTMLElement
                 : queryNode.querySelectorAll(`.mx-listview`)[0] as HTMLElement;
 
-            if (window.document.isEqualNode(queryNode)) break;
+            if (targetNode) break;
             queryNode = queryNode.parentNode as HTMLElement;
         }
 

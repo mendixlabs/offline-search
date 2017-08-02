@@ -20,6 +20,7 @@ export class preview extends Component<OfflineSearchProps, OfflineSearchState> {
     render() {
         return createElement("div", { className: "widget-offline-search" },
             createElement(ValidateConfigs, {
+                ...this.props as OfflineSearchProps,
                 inWebModeler: true,
                 queryNode: this.state.targetNode,
                 targetGridName: this.props.targetGridName,
@@ -32,8 +33,11 @@ export class preview extends Component<OfflineSearchProps, OfflineSearchState> {
     componentDidMount() {
         const queryNode = findDOMNode(this).parentNode as HTMLElement;
         const targetNode = ValidateConfigs.findTargetNode(this.props, queryNode);
+        if (targetNode) {
+            this.setState({ targetNode });
+        }
 
-        this.setState({ findingWidget: false, targetNode });
+        this.setState({ findingWidget: false });
     }
 }
 

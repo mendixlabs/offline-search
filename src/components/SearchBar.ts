@@ -49,9 +49,8 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
 
     componentDidUpdate(_prevProps: SearchBarProps, prevState: SearchBarState) {
         if (this.state.query !== prevState.query) {
-            setTimeout((done) => {
+            setTimeout(() => {
                 this.updateConstraints();
-                done();
             }, 500);
         }
     }
