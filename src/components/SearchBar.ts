@@ -1,4 +1,5 @@
 import { Component, FormEvent, createElement } from "react";
+
 import { HybridConstraint, ListView, WrapperProps } from "./OfflineSearch";
 
 export interface SearchBarProps extends WrapperProps {
@@ -51,8 +52,12 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
         if (this.state.query !== prevState.query) {
             setTimeout(() => {
                 this.updateConstraints();
-            }, 500);
+            }, this.geTimeOut());
         }
+    }
+
+    private geTimeOut(): number {
+        return this.props.showSearchBar || this.props.defaultQuery ? 0 : 500;
     }
 
     private updateQuery(event: FormEvent<HTMLInputElement>) {

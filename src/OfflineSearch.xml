@@ -23,7 +23,7 @@
             <category>Data source</category>
              <description>The type of objects in the grid</description>
         </property>
-        <property key="searchAttribute" type="string" required="true">
+        <property key="searchAttribute" type="string">
             <caption>Search attribute</caption>
             <category>Data source</category>
             <description>The search attribute on the search entity</description>
