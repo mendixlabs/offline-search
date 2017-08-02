@@ -1,6 +1,7 @@
 import { Component, createElement } from "react";
 import { findDOMNode } from "react-dom";
 import * as dijitRegistry from "dijit/registry";
+import * as classNames from "classnames";
 
 import { SearchBar } from "./SearchBar";
 import { ValidateConfigs } from "./ValidateConfigs";
@@ -10,12 +11,14 @@ export type SearchMethodOptions = "equals" | "contains";
 export type HybridConstraint = { attribute: string; operator: string; value: string; path?: string; }[];
 
 export interface WrapperProps {
+    class?: string;
     defaultQuery: string;
     placeHolder: string;
     searchEntity: string;
     searchAttribute: string;
     showSearchBar: boolean;
     searchMethod: SearchMethodOptions;
+    style: string;
 }
 
 export interface OfflineSearchProps extends WrapperProps {
@@ -53,7 +56,11 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
     }
 
     render() {
-        return createElement("div", { className: "widget-offline-search" },
+        return createElement("div",
+            {
+                className: classNames("widget-offline-search", this.props.class),
+                style: this.parseStyle(this.props.style)
+            },
             createElement(ValidateConfigs, {
                 ...this.props as OfflineSearchProps,
                 queryNode: this.state.targetNode,
@@ -82,5 +89,23 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
         }
 
         this.setState({ findingWidget: false });
+    }
+
+    private parseStyle = (style = ""): {[key: string]: string} => {
+        try {
+            return style.split(";").reduce<{[key: string]: string}>((styleObject, line) => {
+                const pair = line.split(":");
+                if (pair.length === 2) {
+                    const name = pair[0].trim().replace(/(-.)/g, match => match[1].toUpperCase());
+                    styleObject[name] = pair[1].trim();
+                }
+                return styleObject;
+            }, {});
+        } catch (error) {
+            // tslint:disable-next-line no-console
+            window.console.log("Failed to parse style", style, error);
+        }
+
+        return {};
     }
 }
