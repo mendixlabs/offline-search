@@ -35,6 +35,7 @@ export interface OfflineSearchState {
 export interface ListView extends mxui.widget._WidgetBase {
     _datasource: {
         _constraints: HybridConstraint | string;
+        _entity: string;
         _setSize: number;
         atEnd: () => boolean;
         _pageSize: number;
