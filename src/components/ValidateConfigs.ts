@@ -55,9 +55,9 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
             const dataSourceEntity: any = window.mx.meta.getEntity(props.targetGrid._datasource._entity);
             const referenceAttributes: string[] = dataSourceEntity.getReferenceAttributes();
             for (const referenceAttribute of referenceAttributes) {
-                if (props.searchEntity.indexOf(referenceAttribute) !== -1) {
+                if ( ValidateConfigs.itContains(props.searchEntity, referenceAttribute)) {
                     const selectorEntity = dataSourceEntity.getSelectorEntity(referenceAttribute);
-                    if (props.searchEntity.indexOf(selectorEntity) !== -1) {
+                    if (ValidateConfigs.itContains(props.searchEntity, selectorEntity)) {
                         return selectorEntity;
                     }
                 }
@@ -71,7 +71,7 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
         if (props.targetGrid) {
             const dataSourceEntity: mendix.lib.MxMetaObject = window.mx.meta.getEntity(entity);
             const dataAttributes: string[] = dataSourceEntity.getAttributes();
-            if (ValidateConfigs.stringArrayContains(dataAttributes, props.searchAttribute)) {
+            if (ValidateConfigs.itContains(dataAttributes, props.searchAttribute)) {
                 return true;
             }
         }
@@ -105,7 +105,7 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
         return targetNode;
     }
 
-    static stringArrayContains(array: string[], element: string) {
+    static itContains(array: string[] | string, element: string) {
         return array.indexOf(element) > -1;
     }
 }

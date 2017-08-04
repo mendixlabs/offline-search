@@ -28,7 +28,7 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
                 createElement("input", {
                     className: "form-control",
                     onChange: this.updateQuery,
-                    placeholder: this.props.placeHolder ? this.props.placeHolder : "Search",
+                    placeholder: this.props.placeHolder,
                     value: this.state.query
                 }),
                 createElement("button",
