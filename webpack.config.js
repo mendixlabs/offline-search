@@ -6,14 +6,14 @@ const package = require("./package");
 const widgetName = package.widgetName;
 
 const widgetConfig = {
-    entry: `./src/components/${widgetName}.ts`,
+    entry: `./src/components/${widgetName}Container.ts`,
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
         filename: `src/com/mendix/widget/custom/${widgetName}/${widgetName}.js`,
         libraryTarget: "umd"
     },
     resolve: {
-        extensions: [ ".ts" ],
+        extensions: [ ".ts", ".js" ],
         alias: {
             "tests": path.resolve(__dirname, "./tests")
         }

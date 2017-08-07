@@ -3,29 +3,23 @@ import { findDOMNode } from "react-dom";
 import * as dijitRegistry from "dijit/registry";
 import * as classNames from "classnames";
 
-import { SearchBar } from "./SearchBar";
+import { CommonProps, SearchBar } from "./SearchBar";
 import { ValidateConfigs } from "./ValidateConfigs";
 import "../ui/OfflineSearch.css";
 
 export type SearchMethodOptions = "equals" | "contains";
-export type HybridConstraint = { attribute: string; operator: string; value: string; path?: string; }[];
+export type HybridConstraint = Array<{ attribute: string; operator: string; value: string; path?: string; }>;
 
-export interface WrapperProps {
+export interface OfflineSearchContainerProps extends CommonProps {
     class?: string;
-    defaultQuery: string;
-    placeHolder: string;
-    searchEntity: string;
     searchAttribute: string;
-    showSearchBar: boolean;
+    searchEntity: string;
+    targetGridName: string;
     searchMethod: SearchMethodOptions;
     style: string;
 }
 
-export interface OfflineSearchProps extends WrapperProps {
-    targetGridName: string;
-}
-
-export interface OfflineSearchState {
+export interface OfflineSearchContainerState {
     alertMessage?: string;
     targetGrid?: ListView;
     targetNode?: HTMLElement;
@@ -46,14 +40,16 @@ export interface ListView extends mxui.widget._WidgetBase {
     update: () => void;
 }
 
-export default class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
-    constructor(props: OfflineSearchProps) {
+export default class OfflineSearch extends Component<OfflineSearchContainerProps, OfflineSearchContainerState> {
+    constructor(props: OfflineSearchContainerProps) {
         super(props);
 
         this.state = {
             alertMessage: "",
             findingWidget: true
         };
+
+        this.updateConstraints = this.updateConstraints.bind(this);
     }
 
     render() {
@@ -63,15 +59,15 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
                 style: this.parseStyle(this.props.style)
             },
             createElement(ValidateConfigs, {
-                ...this.props as OfflineSearchProps,
+                ...this.props as OfflineSearchContainerProps,
                 queryNode: this.state.targetNode,
                 targetGrid: this.state.targetGrid,
                 targetGridName: this.props.targetGridName,
                 validate: !this.state.findingWidget
             }),
             createElement(SearchBar, {
-                ... this.props as WrapperProps,
-                listView: this.state.targetGrid
+                ...this.props as CommonProps,
+                onTextChangeAction: this.updateConstraints
             })
         );
     }
@@ -90,6 +86,30 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
         }
 
         this.setState({ findingWidget: false });
+    }
+
+    private updateConstraints(query: string) {
+        let constraints: HybridConstraint | string = [];
+
+        if (this.state.targetGrid && this.state.targetGrid._datasource) {
+            const datasource = this.state.targetGrid._datasource;
+            if (window.device) {
+                constraints.push({
+                    attribute: this.props.searchAttribute,
+                    operator: this.props.searchMethod,
+                    path: this.props.searchEntity,
+                    value: query
+                });
+                datasource._constraints = query ? constraints : [];
+            } else {
+                constraints = this.props.searchEntity
+                    ? `${this.props.searchEntity}[${this.props.searchMethod}(${this.props.searchAttribute},'${query}')]`
+                    : `${this.props.searchMethod}(${this.props.searchAttribute},'${query}')`;
+                datasource._constraints = query ? "[" + constraints + "]" : "";
+            }
+
+            this.state.targetGrid.update();
+        }
     }
 
     private parseStyle = (style = ""): {[key: string]: string} => {

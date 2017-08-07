@@ -1,12 +1,16 @@
 import { Component, FormEvent, createElement } from "react";
 
-import { HybridConstraint, ListView, WrapperProps } from "./OfflineSearch";
-
-export interface SearchBarProps extends WrapperProps {
-    listView?: ListView;
+export interface CommonProps {
+    defaultQuery: string;
+    placeHolder: string;
+    showSearchBar: boolean;
 }
 
-interface SearchBarState {
+export interface SearchBarProps extends CommonProps {
+    onTextChangeAction?: (query: string) => void;
+}
+
+export interface SearchBarState {
     query: string;
 }
 
@@ -16,7 +20,6 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
         super(props);
 
         this.state = { query: "" };
-        this.updateConstraints = this.updateConstraints.bind(this);
         this.updateQuery = this.updateQuery.bind(this);
         this.resetQuery = this.resetQuery.bind(this);
     }
@@ -51,7 +54,7 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
     componentDidUpdate(_prevProps: SearchBarProps, prevState: SearchBarState) {
         if (this.state.query !== prevState.query) {
             setTimeout(() => {
-                this.updateConstraints();
+                this.props.onTextChangeAction(this.state.query);
             }, this.geTimeOut());
         }
     }
@@ -66,29 +69,5 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
 
     private resetQuery() {
         this.setState({ query: "" });
-    }
-
-    private updateConstraints() {
-        let constraints: HybridConstraint | string = [];
-
-        if (this.props.listView && this.props.listView._datasource) {
-            const datasource = this.props.listView._datasource;
-            if (window.device) {
-                constraints.push({
-                    attribute: this.props.searchAttribute,
-                    operator: this.props.searchMethod,
-                    path: this.props.searchEntity,
-                    value: this.state.query
-                });
-                datasource._constraints = this.state.query ? constraints : [];
-            } else {
-                constraints = this.props.searchEntity
-                    ? `${this.props.searchEntity}[${this.props.searchMethod}(${this.props.searchAttribute},'${this.state.query}')]`
-                    : `${this.props.searchMethod}(${this.props.searchAttribute},'${this.state.query}')`;
-                datasource._constraints = this.state.query ? "[" + constraints + "]" : "";
-            }
-
-            this.props.listView.update();
-        }
     }
 }

@@ -1,9 +1,9 @@
 import { Component, createElement } from "react";
 
 import { Alert } from "./Alert";
-import { ListView, OfflineSearchProps } from "./OfflineSearch";
+import { ListView, OfflineSearchContainerProps } from "./OfflineSearchContainer";
 
-export interface ValidateConfigProps extends OfflineSearchProps {
+export interface ValidateConfigProps extends OfflineSearchContainerProps {
     inWebModeler?: boolean;
     queryNode?: HTMLElement;
     targetGrid?: ListView;
@@ -90,7 +90,7 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
             typeof targetGrid._datasource._setSize !== "undefined");
     }
 
-    static findTargetNode(props: OfflineSearchProps, queryNode: HTMLElement): HTMLElement | null {
+    static findTargetNode(props: OfflineSearchContainerProps, queryNode: HTMLElement): HTMLElement | null {
         let targetNode: HTMLElement | null = null ;
 
         while (!targetNode && queryNode) {
