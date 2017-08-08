@@ -1,7 +1,8 @@
 import { Component, createElement } from "react";
 
 import { Alert } from "./Alert";
-import { ListView, OfflineSearchContainerProps } from "./OfflineSearchContainer";
+import { OfflineSearchContainerProps } from "./OfflineSearchContainer";
+import { ListView } from "../utils/ContainerUtils";
 
 export interface ValidateConfigProps extends OfflineSearchContainerProps {
     inWebModeler?: boolean;

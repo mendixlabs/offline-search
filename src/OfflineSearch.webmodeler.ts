@@ -1,9 +1,10 @@
 import { Component, createElement } from "react";
 import { findDOMNode } from "react-dom";
 
-import { OfflineSearchContainerProps, OfflineSearchContainerState } from "./components/OfflineSearchContainer";
+import { OfflineSearchContainerProps } from "./components/OfflineSearchContainer";
 import { SearchBar, SearchBarProps } from "./components/SearchBar";
 import { ValidateConfigs } from "./components/ValidateConfigs";
+import { OfflineSearchState, parseStyle } from "./utils/ContainerUtils";
 
 declare function require(name: string): string;
 type VisibilityMap = {
@@ -11,7 +12,7 @@ type VisibilityMap = {
 };
 
 // tslint:disable-next-line class-name
-export class preview extends Component<OfflineSearchContainerProps, OfflineSearchContainerState> {
+export class preview extends Component<OfflineSearchContainerProps, OfflineSearchState> {
     constructor(props: OfflineSearchContainerProps) {
         super(props);
 
@@ -29,7 +30,7 @@ export class preview extends Component<OfflineSearchContainerProps, OfflineSearc
                 defaultQuery: "",
                 placeHolder: "",
                 showSearchBar: true,
-                style: SearchBar.parseStyle(this.props.style)
+                style: parseStyle(this.props.style)
             })
         );
     }

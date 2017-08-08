@@ -3,6 +3,7 @@ import { createElement } from "react";
 import * as TestUtils from "react-dom/test-utils";
 
 import { SearchBar, SearchBarProps } from "../SearchBar";
+import { parseStyle } from "../../utils/ContainerUtils";
 
 describe("SearchBar", () => {
     const renderSearchBar = (props: SearchBarProps) => shallow(createElement(SearchBar, props));
@@ -13,22 +14,16 @@ describe("SearchBar", () => {
             onTextChangeAction:  jasmine.any(Function) as any,
             placeHolder: "",
             showSearchBar: true,
-            style: SearchBar.parseStyle("html{}")
+            style: parseStyle("html{}")
         };
         const searchBar = renderSearchBar(searchBarProps);
 
         expect(searchBar).toBeElement(
-            createElement("div",
-                {
-                    className: "widget-offline-search",
-                    style: SearchBar.parseStyle("{{...}}")
-                },
-                createElement("div", { className: "search-container" },
-                    createElement("span", { className: "glyphicon glyphicon-search" }),
-                    createElement("input", { className: "form-control", placeholder: "" }),
-                    createElement("button", { className: "btn-transparent" },
-                        createElement("span", { className: "glyphicon glyphicon-remove" })
-                    )
+            createElement("div", { className: "search-bar" },
+                createElement("span", { className: "glyphicon glyphicon-search" }),
+                createElement("input", { className: "form-control", placeholder: "" }),
+                createElement("button", { className: "btn-transparent" },
+                    createElement("span", { className: "glyphicon glyphicon-remove" })
                 )
             )
         );
@@ -40,7 +35,7 @@ describe("SearchBar", () => {
             onTextChangeAction:  jasmine.any(Function) as any,
             placeHolder: "",
             showSearchBar: false,
-            style: SearchBar.parseStyle("html{}")
+            style: parseStyle("html{}")
         };
         const searchBar = renderSearchBar(searchBarProps);
 
@@ -53,22 +48,16 @@ describe("SearchBar", () => {
             onTextChangeAction:  jasmine.any(Function) as any,
             placeHolder: "Search",
             showSearchBar: true,
-            style: SearchBar.parseStyle("html{}")
+            style: parseStyle("html{}")
         };
         const searchBar = renderSearchBar(searchBarProps);
 
         expect(searchBar).toBeElement(
-            createElement("div",
-                {
-                    className: "widget-offline-search",
-                    style: SearchBar.parseStyle("{{...}}")
-                },
-                createElement("div", { className: "search-container" },
-                    createElement("span", { className: "glyphicon glyphicon-search" }),
-                    createElement("input", { className: "form-control", placeholder: "Search" }),
-                    createElement("button", { className: "btn-transparent" },
-                        createElement("span", { className: "glyphicon glyphicon-remove" })
-                    )
+            createElement("div", { className: "search-bar" },
+                createElement("span", { className: "glyphicon glyphicon-search" }),
+                createElement("input", { className: "form-control", placeholder: "Search" }),
+                createElement("button", { className: "btn-transparent" },
+                    createElement("span", { className: "glyphicon glyphicon-remove" })
                 )
             )
         );
@@ -81,7 +70,7 @@ describe("SearchBar", () => {
                 onTextChangeAction:  () => { return; },
                 placeHolder: "",
                 showSearchBar: true,
-                style: SearchBar.parseStyle("html{}")
+                style: parseStyle("html{}")
             };
 
             const searchBarComponent = TestUtils.renderIntoDocument(createElement(SearchBar, searchBarProps));
@@ -97,22 +86,16 @@ describe("SearchBar", () => {
                 onTextChangeAction:  jasmine.any(Function) as any,
                 placeHolder: "",
                 showSearchBar: true,
-                style: SearchBar.parseStyle("html{}")
+                style: parseStyle("html{}")
             };
             const searchBar = renderSearchBar(searchBarProps);
 
             expect(searchBar).toBeElement(
-                createElement("div",
-                    {
-                        className: "widget-offline-search",
-                        style: SearchBar.parseStyle("{{...}}")
-                    },
-                    createElement("div", { className: "search-container" },
-                        createElement("span", { className: "glyphicon glyphicon-search" }),
-                        createElement("input", { className: "form-control", placeholder: "", value: "default" }),
-                        createElement("button", { className: "btn-transparent" },
-                            createElement("span", { className: "glyphicon glyphicon-remove" })
-                        )
+                createElement("div", { className: "search-bar" },
+                    createElement("span", { className: "glyphicon glyphicon-search" }),
+                    createElement("input", { className: "form-control", placeholder: "", value: "default" }),
+                    createElement("button", { className: "btn-transparent" },
+                        createElement("span", { className: "glyphicon glyphicon-remove" })
                     )
                 )
             );
@@ -149,7 +132,7 @@ describe("SearchBar", () => {
                 onTextChangeAction:  () => { return; },
                 placeHolder: "",
                 showSearchBar: true,
-                style: SearchBar.parseStyle("html{ width:100%;height:100%;}")
+                style: parseStyle("html{ width:100%;height:100%;}")
             };
 
             const searchBarComponent = TestUtils.renderIntoDocument(createElement(SearchBar, searchBarProps));
