@@ -1,4 +1,4 @@
-import { shallow } from "enzyme";
+import { mount, shallow } from "enzyme";
 import { createElement } from "react";
 import * as TestUtils from "react-dom/test-utils";
 
@@ -7,15 +7,16 @@ import { parseStyle } from "../../utils/ContainerUtils";
 
 describe("SearchBar", () => {
     const renderSearchBar = (props: SearchBarProps) => shallow(createElement(SearchBar, props));
+    const mountSearchBar = (props: SearchBarProps) => mount(createElement(SearchBar, props));
+    const searchBarProps: SearchBarProps = {
+        defaultQuery: "search bar",
+        onTextChangeAction:  jasmine.any(Function) as any,
+        placeHolder: "Search",
+        showSearchBar: true,
+        style: parseStyle("html{}")
+    };
 
-    it("renders structure correctly", () => {
-        const searchBarProps: SearchBarProps = {
-            defaultQuery: "",
-            onTextChangeAction:  jasmine.any(Function) as any,
-            placeHolder: "",
-            showSearchBar: true,
-            style: parseStyle("html{}")
-        };
+    it("renders the structure correctly", () => {
         const searchBar = renderSearchBar(searchBarProps);
 
         expect(searchBar).toBeElement(
@@ -29,27 +30,18 @@ describe("SearchBar", () => {
         );
     });
 
-    it("is not visible when show appearance is set to no", () => {
-        const searchBarProps: SearchBarProps = {
-            defaultQuery: "search",
-            onTextChangeAction:  jasmine.any(Function) as any,
-            placeHolder: "",
-            showSearchBar: false,
-            style: parseStyle("html{}")
+    it("does not render when show appearance is set to no", () => {
+        const barProps: SearchBarProps = {
+            ...searchBarProps,
+            showSearchBar: false
         };
-        const searchBar = renderSearchBar(searchBarProps);
+
+        const searchBar = renderSearchBar(barProps);
 
         expect(searchBar).toBeElement("");
     });
 
-    it("shows place holder when specified", () => {
-        const searchBarProps: SearchBarProps = {
-            defaultQuery: "",
-            onTextChangeAction:  jasmine.any(Function) as any,
-            placeHolder: "Search",
-            showSearchBar: true,
-            style: parseStyle("html{}")
-        };
+    it("renders with the specified placeholder", () => {
         const searchBar = renderSearchBar(searchBarProps);
 
         expect(searchBar).toBeElement(
@@ -65,35 +57,22 @@ describe("SearchBar", () => {
 
     describe("input", () => {
         it("accepts value", () => {
-            const searchBarProps: SearchBarProps = {
-                defaultQuery: "search bar",
-                onTextChangeAction:  () => { return; },
-                placeHolder: "",
-                showSearchBar: true,
-                style: parseStyle("html{}")
-            };
+            const wrapper = mountSearchBar(searchBarProps);
+            const input: any = wrapper.find("input");
 
-            const searchBarComponent = TestUtils.renderIntoDocument(createElement(SearchBar, searchBarProps));
-            const inputField = TestUtils.findRenderedDOMComponentWithTag(searchBarComponent, "input");
-            TestUtils.Simulate.change(inputField);
+            input.node.value = "Change";
+            input.simulate("change");
 
-            expect((inputField as HTMLInputElement).value).toBe("search bar");
+            expect(input.get(0).value).toBe("Change");
         });
 
-        it("has input when default query is specified", () => {
-            const searchBarProps: SearchBarProps = {
-                defaultQuery: "default",
-                onTextChangeAction:  jasmine.any(Function) as any,
-                placeHolder: "",
-                showSearchBar: true,
-                style: parseStyle("html{}")
-            };
+        it("renders with specified default query", () => {
             const searchBar = renderSearchBar(searchBarProps);
 
             expect(searchBar).toBeElement(
                 createElement("div", { className: "search-bar" },
                     createElement("span", { className: "glyphicon glyphicon-search" }),
-                    createElement("input", { className: "form-control", placeholder: "", value: "default" }),
+                    createElement("input", { className: "form-control", placeholder: "", value: "search bar" }),
                     createElement("button", { className: "btn-transparent" },
                         createElement("span", { className: "glyphicon glyphicon-remove" })
                     )
@@ -101,42 +80,29 @@ describe("SearchBar", () => {
             );
         });
 
-        it("updates when the search changes", () => {
-            const searchBarProps: SearchBarProps = {
-                defaultQuery: "search bar",
-                onTextChangeAction:  () => { return; },
-                placeHolder: "",
-                showSearchBar: true,
-                style: Object.prototype
+        it("updates when the search value changes", () => {
+            const barProps: SearchBarProps = {
+                ...searchBarProps,
+                onTextChangeAction:  () => { return; }
             };
+            const newValue = "new search bar";
+            const wrapper = mountSearchBar(barProps);
+            const input: any = wrapper.find("input");
 
-            let searchBarComponent = TestUtils.renderIntoDocument(createElement(SearchBar, searchBarProps));
-            let inputField = TestUtils.findRenderedDOMComponentWithTag(searchBarComponent, "input");
-            TestUtils.Simulate.change(inputField);
+            input.node.value = "Change";
+            input.simulate("change");
 
-            expect((inputField as HTMLInputElement).value).toBe("search bar");
+            expect(input.get(0).value).toBe("Change");
 
-            searchBarProps.style = null;
-            searchBarProps.defaultQuery = null;
-            searchBarComponent = TestUtils.renderIntoDocument(createElement(SearchBar, searchBarProps));
-            inputField = TestUtils.findRenderedDOMComponentWithTag(searchBarComponent, "input");
+            wrapper.setState({ query: newValue });
 
-            searchBarComponent.setState({ query: "new search bar" });
-
-            expect((inputField as HTMLInputElement).value).toBe("new search bar");
+            expect(input.get(0).value).toBe(newValue);
         });
 
         it("is cleared when the remove button is clicked", () => {
-            const searchBarProps: SearchBarProps = {
-                defaultQuery: "search bar",
-                onTextChangeAction:  () => { return; },
-                placeHolder: "",
-                showSearchBar: true,
-                style: parseStyle("html{ width:100%;height:100%;}")
-            };
-
             const searchBarComponent = TestUtils.renderIntoDocument(createElement(SearchBar, searchBarProps));
             const inputField = TestUtils.findRenderedDOMComponentWithTag(searchBarComponent, "input");
+
             TestUtils.Simulate.change(inputField);
 
             expect((inputField as HTMLInputElement).value).toBe("search bar");
