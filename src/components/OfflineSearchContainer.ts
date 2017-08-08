@@ -1,7 +1,6 @@
 import { Component, createElement } from "react";
 import { findDOMNode } from "react-dom";
 import * as dijitRegistry from "dijit/registry";
-import * as classNames from "classnames";
 
 import { CommonProps, SearchBar } from "./SearchBar";
 import { ValidateConfigs } from "./ValidateConfigs";
@@ -11,7 +10,6 @@ export type SearchMethodOptions = "equals" | "contains";
 export type HybridConstraint = Array<{ attribute: string; operator: string; value: string; path?: string; }>;
 
 export interface OfflineSearchContainerProps extends CommonProps {
-    class?: string;
     searchAttribute: string;
     searchEntity: string;
     targetGridName: string;
@@ -40,7 +38,7 @@ export interface ListView extends mxui.widget._WidgetBase {
     update: () => void;
 }
 
-export default class OfflineSearch extends Component<OfflineSearchContainerProps, OfflineSearchContainerState> {
+export default class OfflineSearchContainer extends Component<OfflineSearchContainerProps, OfflineSearchContainerState> {
     constructor(props: OfflineSearchContainerProps) {
         super(props);
 
@@ -53,11 +51,7 @@ export default class OfflineSearch extends Component<OfflineSearchContainerProps
     }
 
     render() {
-        return createElement("div",
-            {
-                className: classNames("widget-offline-search", this.props.class),
-                style: this.parseStyle(this.props.style)
-            },
+        return createElement("div", null,
             createElement(ValidateConfigs, {
                 ...this.props as OfflineSearchContainerProps,
                 queryNode: this.state.targetNode,
@@ -67,7 +61,8 @@ export default class OfflineSearch extends Component<OfflineSearchContainerProps
             }),
             createElement(SearchBar, {
                 ...this.props as CommonProps,
-                onTextChangeAction: this.updateConstraints
+                onTextChangeAction: this.updateConstraints,
+                style: SearchBar.parseStyle(this.props.style)
             })
         );
     }
@@ -110,23 +105,5 @@ export default class OfflineSearch extends Component<OfflineSearchContainerProps
 
             this.state.targetGrid.update();
         }
-    }
-
-    private parseStyle = (style = ""): {[key: string]: string} => {
-        try {
-            return style.split(";").reduce<{[key: string]: string}>((styleObject, line) => {
-                const pair = line.split(":");
-                if (pair.length === 2) {
-                    const name = pair[0].trim().replace(/(-.)/g, match => match[1].toUpperCase());
-                    styleObject[name] = pair[1].trim();
-                }
-                return styleObject;
-            }, {});
-        } catch (error) {
-            // tslint:disable-next-line no-console
-            window.console.log("Failed to parse style", style, error);
-        }
-
-        return {};
     }
 }

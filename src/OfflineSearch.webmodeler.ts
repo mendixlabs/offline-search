@@ -21,18 +21,22 @@ export class preview extends Component<OfflineSearchContainerProps, OfflineSearc
         return createElement("div", { className: "widget-offline-search" },
             createElement(ValidateConfigs, {
                 ...this.props as OfflineSearchContainerProps,
-                inWebModeler: true,
                 queryNode: this.state.targetNode,
-                targetGridName: this.props.targetGridName,
+                targetGrid: this.state.targetGrid,
                 validate: !this.state.findingWidget
             }),
-            createElement(SearchBar, this.props)
+            createElement(SearchBar, {
+                defaultQuery: "",
+                placeHolder: "",
+                showSearchBar: true,
+                style: SearchBar.parseStyle(this.props.style)
+            })
         );
     }
 
     componentDidMount() {
-        const queryNode = findDOMNode(this).parentNode as HTMLElement;
-        const targetNode = ValidateConfigs.findTargetNode(this.props, queryNode);
+        const routeNode = findDOMNode(this).parentNode as HTMLElement;
+        const targetNode = ValidateConfigs.findTargetNode(this.props, routeNode);
         if (targetNode) {
             this.setState({ targetNode });
         }
