@@ -1,15 +1,15 @@
 import { Component, createElement } from "react";
 import { findDOMNode } from "react-dom";
 import * as dijitRegistry from "dijit/registry";
+import * as classNames from "classnames";
 
 import { SearchBar } from "./SearchBar";
-import { OfflineSearchContainerProps } from "./OfflineSearchContainer";
 import { ValidateConfigs } from "./ValidateConfigs";
+import { CommonProps, HybridConstraint, ListView, OfflineSearchProps, OfflineSearchState, parseStyle } from "../utils/ContainerUtils";
 import "../ui/OfflineSearch.css";
-import { CommonProps, HybridConstraint, ListView, OfflineSearchState, parseStyle } from "../utils/ContainerUtils";
 
-export class OfflineSearch extends Component<OfflineSearchContainerProps, OfflineSearchState> {
-    constructor(props: OfflineSearchContainerProps) {
+export default class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
+    constructor(props: OfflineSearchProps) {
         super(props);
 
         this.state = {
@@ -21,9 +21,13 @@ export class OfflineSearch extends Component<OfflineSearchContainerProps, Offlin
     }
 
     render() {
-        return createElement("div", null,
+        return createElement("div",
+            {
+                className: classNames("widget-offline-search", this.props.class),
+                style: parseStyle(this.props.style)
+            },
             createElement(ValidateConfigs, {
-                ...this.props as OfflineSearchContainerProps,
+                ...this.props as OfflineSearchProps,
                 queryNode: this.state.targetNode,
                 targetGrid: this.state.targetGrid,
                 targetGridName: this.props.targetGridName,

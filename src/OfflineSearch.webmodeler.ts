@@ -1,10 +1,9 @@
 import { Component, createElement } from "react";
 import { findDOMNode } from "react-dom";
 
-import { OfflineSearchContainerProps } from "./components/OfflineSearchContainer";
 import { SearchBar, SearchBarProps } from "./components/SearchBar";
 import { ValidateConfigs } from "./components/ValidateConfigs";
-import { OfflineSearchState, parseStyle } from "./utils/ContainerUtils";
+import { OfflineSearchProps, OfflineSearchState, parseStyle } from "./utils/ContainerUtils";
 
 declare function require(name: string): string;
 type VisibilityMap = {
@@ -12,8 +11,8 @@ type VisibilityMap = {
 };
 
 // tslint:disable-next-line class-name
-export class preview extends Component<OfflineSearchContainerProps, OfflineSearchState> {
-    constructor(props: OfflineSearchContainerProps) {
+export class preview extends Component<OfflineSearchProps, OfflineSearchState> {
+    constructor(props: OfflineSearchProps) {
         super(props);
 
         this.state = { findingWidget: true };
@@ -21,7 +20,7 @@ export class preview extends Component<OfflineSearchContainerProps, OfflineSearc
     render() {
         return createElement("div", { className: "widget-offline-search" },
             createElement(ValidateConfigs, {
-                ...this.props as OfflineSearchContainerProps,
+                ...this.props as OfflineSearchProps,
                 queryNode: this.state.targetNode,
                 targetGrid: this.state.targetGrid,
                 validate: !this.state.findingWidget
