@@ -7,6 +7,13 @@ export interface CommonProps {
     showSearchBar: boolean;
 }
 
+export interface OfflineSearchProps extends CommonProps {
+    searchAttribute: string;
+    searchEntity: string;
+    targetGridName: string;
+    searchMethod: SearchMethodOptions;
+    style: string;
+}
 export interface OfflineSearchState {
     alertMessage?: string;
     targetGrid?: ListView;

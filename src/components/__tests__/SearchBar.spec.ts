@@ -1,6 +1,5 @@
 import { mount, shallow } from "enzyme";
 import { createElement } from "react";
-import * as TestUtils from "react-dom/test-utils";
 
 import { SearchBar, SearchBarProps } from "../SearchBar";
 import { parseStyle } from "../../utils/ContainerUtils";
@@ -100,17 +99,18 @@ describe("SearchBar", () => {
         });
 
         it("is cleared when the remove button is clicked", () => {
-            const searchBarComponent = TestUtils.renderIntoDocument(createElement(SearchBar, searchBarProps));
-            const inputField = TestUtils.findRenderedDOMComponentWithTag(searchBarComponent, "input");
+            const wrapper = mountSearchBar(searchBarProps);
+            const input: any = wrapper.find("input");
+            const button: any = wrapper.find("button");
 
-            TestUtils.Simulate.change(inputField);
+            input.node.value = "Change";
+            input.simulate("change");
 
-            expect((inputField as HTMLInputElement).value).toBe("search bar");
+            expect(input.get(0).value).toBe("Change");
 
-            const clearButton = TestUtils.findRenderedDOMComponentWithTag(searchBarComponent, "button");
-            TestUtils.Simulate.click(clearButton);
+            button.simulate("click");
 
-            expect((inputField as HTMLInputElement).value).toBe("");
+            expect(input.get(0).value).toBe("");
         });
     });
 });
