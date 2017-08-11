@@ -55,14 +55,22 @@ describe("SearchBar", () => {
     });
 
     describe("input", () => {
-        it("accepts value", () => {
-            const wrapper = mountSearchBar(searchBarProps);
+        it("accepts value", (done) => {
+            const newValue = "cat";
+            const barProps: SearchBarProps = {
+                ...searchBarProps,
+                onTextChangeAction: value => value
+            };
+            spyOn(barProps, "onTextChangeAction").and.callThrough();
+            const wrapper = renderSearchBar(barProps);
             const input: any = wrapper.find("input");
 
-            input.node.value = "Change";
-            input.simulate("change");
+            input.simulate("change", { currentTarget: { value: newValue } });
 
-            expect(input.get(0).value).toBe("Change");
+            setTimeout(() => {
+                expect(barProps.onTextChangeAction).toHaveBeenCalledWith(newValue);
+                done();
+            }, 1000);
         });
 
         it("renders with specified default query", () => {
@@ -79,23 +87,28 @@ describe("SearchBar", () => {
             );
         });
 
-        it("updates when the search value changes", () => {
+        it("updates when the search value changes", (done) => {
+            const newValue = "cat";
             const barProps: SearchBarProps = {
                 ...searchBarProps,
-                onTextChangeAction:  () => { return; }
+                onTextChangeAction: value => value
             };
-            const newValue = "new search bar";
-            const wrapper = mountSearchBar(barProps);
+            spyOn(barProps, "onTextChangeAction").and.callThrough();
+            const wrapper = renderSearchBar(barProps);
             const input: any = wrapper.find("input");
 
-            input.node.value = "Change";
-            input.simulate("change");
+            input.simulate("change", { currentTarget: { value: barProps.defaultQuery } });
 
-            expect(input.get(0).value).toBe("Change");
+            setTimeout(() => {
+                expect(barProps.onTextChangeAction).toHaveBeenCalledWith(barProps.defaultQuery);
 
-            wrapper.setState({ query: newValue });
+                input.simulate("change", { currentTarget: { value: newValue } });
 
-            expect(input.get(0).value).toBe(newValue);
+                setTimeout(() => {
+                    expect(barProps.onTextChangeAction).toHaveBeenCalledWith(newValue);
+                    done();
+                }, 1000);
+            }, 1000);
         });
 
         it("is cleared when the remove button is clicked", () => {
