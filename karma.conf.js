@@ -29,7 +29,7 @@ module.exports = function(config) {
         });
     }
 
-    config.set({
+    const configuration = {
         basePath: "",
         frameworks: [ "jasmine" ],
         files: [
@@ -41,12 +41,18 @@ module.exports = function(config) {
         preprocessors: { "tests/test-index.js": [ "webpack", "sourcemap" ] },
         webpack: webpackConfig,
         webpackServer: { noInfo: true },
-        reporters: [ "progress", config.codeCoverage ? "coverage" : "kjhtml" ],
+        reporters: [ "spec", config.codeCoverage ? "coverage" : "kjhtml" ],
         port: 9876,
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
         browsers: [ "Chrome" ],
+        customLaunchers: {
+            Chrome_travis_ci: {
+                base: "Chrome",
+                flags: [ "--no-sandbox" ]
+            }
+        },
         singleRun: false,
         concurrency: Infinity,
         coverageReporter: {
@@ -55,9 +61,12 @@ module.exports = function(config) {
                 { type: "json", subdir: ".", file: "coverage.json" },
                 { type: "text" }
             ]
-        },
-        jasmineNodeOpts: {
-            defaultTimeoutInterval: 10000
         }
-    });
+    };
+
+    if (process.env.TRAVIS) {
+        configuration.browsers = [ "Chrome_travis_ci" ];
+    }
+
+    config.set(configuration);
 };

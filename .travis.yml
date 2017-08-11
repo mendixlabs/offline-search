@@ -1,0 +1,39 @@
+sudo: required
+dist: trusty
+language: node_js
+node_js:
+- "6"
+before_install:
+- npm i -g npm
+- npm install grunt-cli -g
+- export CHROME_BIN=chromium-browser
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+- wget -q -O - http://opensource.wandisco.com/wandisco-debian.gpg | sudo apt-key add -
+- sudo sh -c "echo 'deb http://opensource.wandisco.com/debian/ wheezy svn17' > /etc/apt/sources.list.d/wandisco-subversion.list"
+- sudo apt-get -qq update
+- sudo apt-get install -y --allow-downgrades subversion=1.7.22-1+WANdisco libsvn1=1.7.22-1+WANdisco
+- svn --version
+after_success:
+- bash <(curl -s https://codecov.io/bash)
+cache:
+  directories:
+  - node_modules
+env:
+  global:
+  - MX_APP_NAME=offlinesearch
+  - MX_BRANCH_NAME=trunk
+  - MX_PROJECT_ID=fd556f33-bbc2-4c60-bf68-a36d7f4ef872
+  - MX_ENVIRONMENT=Sandbox
+  - MX_USER=ci@flockofbirds.nl
+  - secure: JJRWswYgoLEOQelUWSO1gCw3b8CgbDCynD1qJcZmPN4AikkE6iOFx/MPAnK2xtxPx1eG2k1/wbRkNvUBazJ3oPyBHKJIk5tk+Ey8LowWbrKRkZngcMARjkjKaxPM9VPlMRVBnUmaBt5y5e3hc/ytpYArde2nGle3aczOzGn/KhhTtN5jZn3X+u62p9hFyl5nefYrs84iovyKYyXEHWzHkBqqqwQ/xp4Z1UJZp2CPGtpZEemh9wXI9KYVcfMCwx4obdRkf9zsf+920G7A5n7WQ4sAtINJUn/LcnisdgpzBlnEJEPrT1AzLnLY0YZ/cE+TLWFOZjZqUoQwFXPzAkxevNxrbfU52tamAKSgu5cMx6DqDEb5zc114ZM766MzUTPvqh81+HgO2qSLv2hjXI70EDxQ3oE8tabZ7ZNlLcpq7lOqCYyGOu/FJjWhJD28038JhPWtrYsqv7v26IaRi7H6WbrZqnN8RohI8f4mXT/R1NsKSY4iWpwklug7A3zFKKru+XtJDQ0d6OFjpKoEvTBI0QwqUGUy7Y3963OaA/2jynLe59D0GlcuzDc3jPAazei8ycwZ6z7k8L89rRAXig279dSM8xanKmuNKz0MPI75QU32hN/PGOLBUQWjpQTKF0Spqo9NMGVVABqkbahyQ1L5zZu3PZnZkOp+2bwTuJ9yP2c=
+  - secure: djPqNE25eyGm4wRsGw3Kvf2dyMB/lFCYZUnrwA5TPb+ohDSbKjRVPjDvVDrNGGqOeFO7xfS3JZOulWTGYifFeSYGXmr1NWbo88ejdmKt1LbtTTVSPNrfnpV+/g6pyXCojAbGmW83o2yjWE4HRMApjBlxrdIuXy77M839q+YY9DuRO3oPpopnLS/aB8ePaQk8DsHbfsWQcZjgel+TWI0mFilnUwaZ7XfZLVGbj+TBp/eHBw0BvFuBSPlghgDQnY2R6t1mE1TyVfpl81ukkhW2eKxR1McD0cBS6NFkAM6M28VjaupAdvzhUhEmwpLPp+YCt/kMWOSw6PLTs7yYeKx/yJ4nfRxNZ47WjK/CiG3D/vML6EHU/0RqTXjYZJHeebDBh4HQ1OShmjpM7FwdpZQYrxQGVSGaPZR/h+eEGUQTNUouuJQFhdSS2KsNtiKerQ1r+vM1GQIq5icrdi/sYg17pOmJ2Wx03ekucFED3WVCIC/PPyZ/AU1JTstePJ80oFIRioAFr9AS0d4vB4yuWkJVPyaxvrB0N6QkxTfdnlSLv4Fp/USJYhSrS37pXiEbCb3/ODpOC/WFXxB6zu12qVAQYhoz5dXPezKlOEgDMy3trBgffhdv7ErEegPhJD/Bsm9IPz4MhyE+T81SDxAenasyfzOdBbGl2/3Bly2Zdv0eskI=
+deploy:
+  provider: releases
+  api_key:
+    secure: mR89VdAnDhWIWUVlQ3swbK8cdmtsEt3QQiBg7rHD+/ET8pU6aJ8X+n/PSeVF+T/lHWobGAqspzXPqP3jS6rvQHKamrhhaK05JJlHHTvNNy1XkXQfG/SyLoGTK8wDXNn3z4xRPqwU+z77N+KvfcgqBG7DdJMKu4Ri8YSUJ+ZpU8mcQLQJNMLbExy8uXbc0AEqptmw3V99SIidMbDVyxjMyjoL0ZTcxOrDdIFS5JcCqglC7cbzv6FJ8owQ7ohePWWJ+RlDDyYp2Pi1E/jZrmBu0AySatd1r99GO1vuN9LZzp7ic9yLoUB3jojZM8uOY7/Qm/g5e4DlQgGdVfjAAzS2ZKh4iceU+6rwoaDus8Mq1Xtx3Xfbe2Vhm4+/sr1B+Yunr2ve28PVFveEbUi1aobNlpdkNLZefH85r5xk9tEAwCrSq2cyzLN6TWTKM58qODSsK3wU3Kli84mID9vWosN/4CQEWp+MXrRofEKcQw5NeGyEkB26uXoeOoSvV1WjzM4LfxA6aNYawjhUJWUOVy+7JVzBs80mFELAweRlEcNUPaaogPFqy1h3JBzT9XrGSoZklK8a7pre4GY5squGgdks6+hgN1YrMHmH3koYkQEKzkJS3Vn8rMFRF/BLsOJ1+Nq2Y55oROc7wVAwbfHdwUTQxaeUSoe2Nq12Deti5/IuNDw=
+  file_glob: true
+  file: dist/release/*
+  on:
+    repo: FlockOfBirds/offline-search
+    branch: feature/initial
