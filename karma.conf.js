@@ -9,7 +9,8 @@ Object.assign(webpackConfig, {
         "react/addons",
         "jsdom",
         "dojo/_base/declare",
-        "mxui/widget/_WidgetBase"
+        "mxui/widget/_WidgetBase",
+        "dijit/registry"
     ]
 });
 
