@@ -52,7 +52,7 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
 
     static getRelatedEntity(props: ValidateConfigProps): string {
         if (props.targetGrid) {
-            const dataSourceEntity: any = window.mx.meta.getEntity(props.targetGrid._datasource._entity);
+            const dataSourceEntity = window.mx.meta.getEntity(props.targetGrid._datasource._entity);
             const referenceAttributes: string[] = dataSourceEntity.getReferenceAttributes();
             for (const referenceAttribute of referenceAttributes) {
                 if ( ValidateConfigs.itContains(props.searchEntity, referenceAttribute)) {

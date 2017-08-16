@@ -21,6 +21,7 @@ export class preview extends Component<OfflineSearchProps, OfflineSearchState> {
         return createElement("div", { className: "widget-offline-search" },
             createElement(ValidateConfigs, {
                 ...this.props as OfflineSearchProps,
+                inWebModeler: true,
                 queryNode: this.state.targetNode,
                 targetGrid: this.state.targetGrid,
                 validate: !this.state.findingWidget
