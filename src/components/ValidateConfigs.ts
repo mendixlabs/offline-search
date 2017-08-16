@@ -38,9 +38,15 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
         if (!props.searchEntity && !ValidateConfigs.isValidAttribute(props.targetGrid._datasource._entity, props)) {
             return `${widgetName}: supplied attribute name "${props.searchAttribute}" does not belong to list view`;
         }
-        if (props.searchEntity && !ValidateConfigs.getRelatedEntity(props)) {
+        if (props.searchEntity && !ValidateConfigs.itContains(props.searchEntity, "/")) {
+            if (props.searchEntity !== props.targetGrid._datasource._entity) {
+                return `${widgetName}: supplied entity "${props.searchEntity}" does not belong to list view data source`;
+            }
+        }
+        if (props.searchEntity && ValidateConfigs.itContains(props.searchEntity, "/") && !ValidateConfigs.getRelatedEntity(props)) {
             return `${widgetName}: supplied entity "${props.searchEntity}" does not belong to list view data source reference`;
-        }else {
+        }
+        if (props.searchEntity && ValidateConfigs.itContains(props.searchEntity, "/")) {
             const entityPath = ValidateConfigs.getRelatedEntity(props);
             if (props.searchEntity && !ValidateConfigs.isValidAttribute(entityPath, props)) {
                 return `${widgetName}: supplied attribute name "${props.searchAttribute}" does not belong to list view data source reference`;

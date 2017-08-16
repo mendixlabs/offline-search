@@ -16,7 +16,6 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
             alertMessage: "",
             findingWidget: true
         };
-
         this.updateConstraints = this.updateConstraints.bind(this);
     }
 
@@ -53,14 +52,20 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
                 this.setState({ targetGrid });
             }
         }
-
-        this.setState({ findingWidget: false });
+        const validateMessage = ValidateConfigs.validate({
+            ...this.props as OfflineSearchProps,
+            queryNode: targetNode,
+            targetGrid,
+            targetGridName: this.props.targetGridName,
+            validate: true
+        });
+        this.setState({ findingWidget: false, validationPassed: !validateMessage ? true : false });
     }
 
     private updateConstraints(query: string) {
         let constraints: HybridConstraint | string = [];
 
-        if (this.state.targetGrid && this.state.targetGrid._datasource) {
+        if (this.state.targetGrid && this.state.targetGrid._datasource && this.state.validationPassed) {
             const datasource = this.state.targetGrid._datasource;
             if (window.device) {
                 constraints.push({
@@ -71,7 +76,7 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
                 });
                 datasource._constraints = query ? constraints : [];
             } else {
-                constraints = this.props.searchEntity
+                constraints = this.props.searchEntity && ValidateConfigs.itContains(this.props.searchEntity, "/" )
                     ? `${this.props.searchEntity}[${this.props.searchMethod}(${this.props.searchAttribute},'${query}')]`
                     : `${this.props.searchMethod}(${this.props.searchAttribute},'${query}')`;
                 datasource._constraints = query ? "[" + constraints + "]" : "";

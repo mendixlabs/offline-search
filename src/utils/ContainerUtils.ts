@@ -19,6 +19,7 @@ export interface OfflineSearchState {
     targetGrid?: ListView;
     targetNode?: HTMLElement;
     findingWidget: boolean;
+    validationPassed?: boolean;
 }
 
 export type HybridConstraint = Array<{ attribute: string; operator: string; value: string; path?: string; }>;
