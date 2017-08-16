@@ -4,7 +4,7 @@ import { Element } from "webdriverio";
 const testValue = "yellow";
 
 describe("OfflineSearch", () => {
-    it("when query is entered list view should be filtered", () => {
+    it("when query is entered in the search input the list view should be filtered", () => {
         page.open();
         page.searchInput.waitForVisible();
         page.searchInput.click();
@@ -14,7 +14,7 @@ describe("OfflineSearch", () => {
         expect(listviewItems.length).toBe(1);
     });
 
-    it("when query is entered and cleared list view should be filtered", () => {
+    it("when query is entered in the search input and clear button clicked the list view should be filtered with new query", () => {
         page.open();
         page.searchInput.waitForVisible();
         page.searchInput.click();

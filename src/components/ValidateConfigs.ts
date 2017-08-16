@@ -61,7 +61,7 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
             const dataSourceEntity = window.mx.meta.getEntity(props.targetGrid._datasource._entity);
             const referenceAttributes: string[] = dataSourceEntity.getReferenceAttributes();
             for (const referenceAttribute of referenceAttributes) {
-                if ( ValidateConfigs.itContains(props.searchEntity, referenceAttribute)) {
+                if (ValidateConfigs.itContains(props.searchEntity, referenceAttribute)) {
                     const selectorEntity = dataSourceEntity.getSelectorEntity(referenceAttribute);
                     if (ValidateConfigs.itContains(props.searchEntity, selectorEntity)) {
                         return selectorEntity;

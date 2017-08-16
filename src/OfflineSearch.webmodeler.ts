@@ -3,11 +3,11 @@ import { findDOMNode } from "react-dom";
 
 import { SearchBar, SearchBarProps } from "./components/SearchBar";
 import { ValidateConfigs } from "./components/ValidateConfigs";
-import { OfflineSearchProps, OfflineSearchState, parseStyle } from "./utils/ContainerUtils";
+import { CommonProps, OfflineSearchProps, OfflineSearchState, parseStyle } from "./utils/ContainerUtils";
 
 declare function require(name: string): string;
 type VisibilityMap = {
-    [P in keyof SearchBarProps]: boolean;
+    [ P in keyof SearchBarProps ]: boolean;
 };
 
 // tslint:disable-next-line class-name
@@ -17,6 +17,7 @@ export class preview extends Component<OfflineSearchProps, OfflineSearchState> {
 
         this.state = { findingWidget: true };
     }
+
     render() {
         return createElement("div", { className: "widget-offline-search" },
             createElement(ValidateConfigs, {
@@ -27,8 +28,8 @@ export class preview extends Component<OfflineSearchProps, OfflineSearchState> {
                 validate: !this.state.findingWidget
             }),
             createElement(SearchBar, {
-                defaultQuery: "",
-                placeHolder: "",
+                ...this.props as CommonProps,
+                onTextChangeAction: () => { return; },
                 showSearchBar: true,
                 style: parseStyle(this.props.style)
             })
@@ -36,13 +37,21 @@ export class preview extends Component<OfflineSearchProps, OfflineSearchState> {
     }
 
     componentDidMount() {
-        const routeNode = findDOMNode(this).parentNode as HTMLElement;
-        const targetNode = ValidateConfigs.findTargetNode(this.props, routeNode);
+        this.validateConfigs(this.props);
+    }
+
+    componentWillReceiveProps(newProps: OfflineSearchProps) {
+        this.validateConfigs(newProps);
+    }
+
+    private validateConfigs(props: OfflineSearchProps) {
+        const routeNode = findDOMNode(this) as HTMLElement;
+        const targetNode = ValidateConfigs.findTargetNode(props, routeNode);
+
         if (targetNode) {
             this.setState({ targetNode });
         }
-
-        this.setState({ findingWidget: false });
+        this.setState({ findingWidget: true });
     }
 }
 

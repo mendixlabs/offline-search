@@ -59,7 +59,7 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
             targetGridName: this.props.targetGridName,
             validate: true
         });
-        this.setState({ findingWidget: false, validationPassed: !validateMessage ? true : false });
+        this.setState({ findingWidget: false, validationPassed: !validateMessage });
     }
 
     private updateConstraints(query: string) {
@@ -76,7 +76,7 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
                 });
                 datasource._constraints = query ? constraints : [];
             } else {
-                constraints = this.props.searchEntity && ValidateConfigs.itContains(this.props.searchEntity, "/" )
+                constraints = this.props.searchEntity && ValidateConfigs.itContains(this.props.searchEntity, "/")
                     ? `${this.props.searchEntity}[${this.props.searchMethod}(${this.props.searchAttribute},'${query}')]`
                     : `${this.props.searchMethod}(${this.props.searchAttribute},'${query}')`;
                 datasource._constraints = query ? "[" + constraints + "]" : "";
