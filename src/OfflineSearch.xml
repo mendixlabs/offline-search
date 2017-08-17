@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget id="com.mendix.widget.custom.OfflineSearch.OfflineSearch" offlineCapable="true" needsEntityContext="false" xmlns="http://www.mendix.com/widget/1.0/">
+    <name>Offline search</name>
+    <description>Search Mendix List views, Template Grids and Data Grids using a single-field search</description>
+    <icon>iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAAXNSR0IArs4c6QAAAh9JREFUKBVjZICCqKgowV+/fukzMjJKATH3////vwLxMzY2tovLli17D1OHTDOCOL6+voqCwmKO5s6+mgZGZipSorwSv37+enfy5Imbe7asu/L+7av9mzdvvo+sEcRm9vb2FuQVEPIOTi6xU1bT1JET4xNlYWRiYWNl5ZVXUJQXV9bjvXXxHJOsrPT927dv/0A2gOnv379GFi5+WryCIvKC3GxsTAwMYNeAFIHY8tISKtYe/rogdcgaQWwWoD9lVbVN5ECcZ++//wBhEBsZaOmbKK6e90sWWQzEZvnz5w8/JyeX0J9//8BymlJ8fOiKnr7/zgpShy7OBLT525/f3z+DJLBpBIkz/v31GaQOxEYGTD9//nxy49yxZyzMTMx//vz/iywJYv8H4ivnjj8FqUOXY/r69evpJXOm3P375d2bn/9Q9TIzMzB/+/Tu19K50x8A4/42umbmt2/ffvv+7euHfbu2CAoJCjJqqKtwc3Gy8/79/ePzji0b7+VkpF0qLy+tOX78+BN5efmnjx8//ggzBB4tQAExZmZmB6ANykA2KNA+AVPYXaDYFU5Ozphly1ZW9vR013/79mXNyZMnr8EMIEizs7OrSktL9x88eOK/r69/h7W1tQVIEzNBnUAFwATy7sePH28OHz7EMHXqvPzr169/4+fnYSVGL1wNCwuLi6Wl1aIbN178NzIyKkP2M1wRPgYwDGKAOU1XSkpqMQAi/NjGfJCO6QAAAABJRU5ErkJggg==</icon>
+    <properties>
+        <property key="targetGridName" type="string" required="false">
+            <caption>List view name</caption>
+            <category>Data source</category>
+            <description>Optional, if not specified the closest list view is used</description>
+        </property>
+        <property key="searchMethod" type="enumeration" defaultValue="contains">
+            <caption>Search method</caption>
+            <category>Data source</category>
+            <description>Contains as default and first option</description>
+            <enumerationValues>
+                <enumerationValue key="equals">Equals</enumerationValue>
+                <enumerationValue key="contains">Contains</enumerationValue>
+            </enumerationValues>
+        </property>
+        <property key="searchEntity" type="string" required="false">
+            <caption>List view entity</caption>
+            <category>Data source</category>
+            <description>Full name of the entity "module.entity". This entity should match the list view entity</description>
+        </property>
+        <property key="searchAttribute" type="string">
+            <caption>Search attribute</caption>
+            <category>Data source</category>
+            <description>The attribute of the list view entity</description>
+        </property>
+        <property key="defaultQuery" type="translatableString" required="false">
+            <caption>Default query</caption>
+            <category>Data source</category>
+            <description>The default query that is used to filter the list</description>
+        </property>
+        <property key="showSearchBar" type="boolean" defaultValue="true">
+            <caption>Show search bar</caption>
+            <category>Appearance</category>
+            <description> It controls if the search bar should be visible or not</description>
+        </property>
+        <property key="placeHolder" type="translatableString" required="false">
+            <caption>Placeholder</caption>
+            <category>Appearance</category>
+            <description>Specifies a short hint that describes the expected value of the search input field</description>
+            <translations>
+                <translation lang="en_US">Search</translation>
+                <translation lang="nl_NL">Zoeken</translation>
+            </translations>
+        </property>
+    </properties>
+</widget>
