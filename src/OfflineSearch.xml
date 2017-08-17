@@ -21,7 +21,7 @@
         <property key="searchEntity" type="string" required="false">
             <caption>List view entity</caption>
             <category>Data source</category>
-             <description></description>
+            <description>Full name of the entity "module.entity". This entity should match the list view entity</description>
         </property>
         <property key="searchAttribute" type="string">
             <caption>Search attribute</caption>
@@ -39,7 +39,7 @@
             <description> It controls if the search bar should be visible or not</description>
         </property>
         <property key="placeHolder" type="translatableString" required="false">
-            <caption>Place holder</caption>
+            <caption>Placeholder</caption>
             <category>Appearance</category>
             <description>Specifies a short hint that describes the expected value of the search input field</description>
             <translations>

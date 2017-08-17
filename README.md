@@ -45,7 +45,7 @@ Mendix 7.4
 ![Data source](/assets/Datasource.png)
  - On the `List view name` option of the `Data source` tab, input the "name" property of the list widget you want to search in.
  - On the `Search method` option of the `Data source` tab, select the search name that you will use to constrain the data on the grid.
- - On the `List view entity` option of the `Data source` tab, input the name of the entity to be used in the filter. The entity shown in the list widget. You must enter the value as: `ModuleName.EntityName`
+ - On the `List view entity` option of the `Data source` tab, input the name of the entity to be used in the filter. The entity shown in the list view widget. You must enter the value as: `ModuleName.EntityName`
  - On the `Search attribute` option of the `Data source` tab, input the name of the field or attribute on the list widget entity to be searched. You must enter the name of the attribute manually, exactly as it appears in the domain model.
  - On the `Default query` option of the `Data source` tab, input the name of default query to be used when the when the widget is first launched for the first time.
 
@@ -53,8 +53,7 @@ Mendix 7.4
 
 ![Appearance](/assets/Appearance.png)
  - On the `Show search bar` option of the `Appearance` tab, select `yes` or `no` for visibility of the widget.
- - On the `Place holder` option of the `Appearance` tab, input the place holder name that you will to
-to use to constrain the data on the grid that will shown to the user to indicate what kind of input that is expected
+ - On the `Placeholder` option of the `Appearance` tab, input the placeholder to indicate what kind of input is expected as query
 
 ## Issues, suggestions and feature requests
 Please report issues at [https://github.com/mendixlabs/offline-search/issues](https://github.com/mendixlabs/offline-search/issues).
