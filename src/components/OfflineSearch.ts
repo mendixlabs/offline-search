@@ -1,9 +1,11 @@
-import { Component, createElement } from "react";
+import { Component, ReactElement, createElement } from "react";
 import { findDOMNode } from "react-dom";
 import * as dijitRegistry from "dijit/registry";
 import * as classNames from "classnames";
+import * as dojoLang from "dojo/_base/lang";
+import * as dojoConnect from "dojo/_base/connect";
 
-import { SearchBar } from "./SearchBar";
+import { SearchBar, SearchBarProps } from "./SearchBar";
 import { ValidateConfigs } from "./ValidateConfigs";
 import { CommonProps, HybridConstraint, ListView, OfflineSearchProps, OfflineSearchState, parseStyle } from "../utils/ContainerUtils";
 import "../ui/OfflineSearch.css";
@@ -17,6 +19,7 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
             findingWidget: true
         };
         this.updateConstraints = this.updateConstraints.bind(this);
+        dojoConnect.connect(props.mxform, "onNavigation", this, dojoLang.hitch(this, this.initSearch));
     }
 
     render() {
@@ -32,34 +35,44 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
                 targetGridName: this.props.targetGridName,
                 validate: !this.state.findingWidget
             }),
-            createElement(SearchBar, {
-                ...this.props as CommonProps,
-                onTextChangeAction: this.updateConstraints,
-                style: parseStyle(this.props.style)
-            })
+            this.renderBar()
         );
     }
 
-    componentDidMount() {
-        const queryNode = findDOMNode(this).parentNode as HTMLElement;
-        const targetNode = ValidateConfigs.findTargetNode(this.props, queryNode);
-        let targetGrid: ListView | null = null;
-
-        if (targetNode) {
-            this.setState({ targetNode });
-            targetGrid = dijitRegistry.byNode(targetNode);
-            if (targetGrid) {
-                this.setState({ targetGrid });
-            }
+    private renderBar(): ReactElement<SearchBarProps> {
+        if (this.state.validationPassed) {
+            return createElement(SearchBar, {
+                ...this.props as CommonProps,
+                onTextChangeAction: this.updateConstraints,
+                style: parseStyle(this.props.style)
+            });
         }
-        const validateMessage = ValidateConfigs.validate({
-            ...this.props as OfflineSearchProps,
-            queryNode: targetNode,
-            targetGrid,
-            targetGridName: this.props.targetGridName,
-            validate: true
-        });
-        this.setState({ findingWidget: false, validationPassed: !validateMessage });
+
+        return null;
+    }
+
+    private initSearch() {
+        if (!this.state.validationPassed) {
+            const queryNode = findDOMNode(this).parentNode as HTMLElement;
+            const targetNode = ValidateConfigs.findTargetNode(this.props, queryNode);
+            let targetGrid: ListView | null = null;
+
+            if (targetNode) {
+                this.setState({ targetNode });
+                targetGrid = dijitRegistry.byNode(targetNode);
+                if (targetGrid) {
+                    this.setState({ targetGrid });
+                }
+            }
+            const validateMessage = ValidateConfigs.validate({
+                ...this.props as OfflineSearchProps,
+                queryNode: targetNode,
+                targetGrid,
+                targetGridName: this.props.targetGridName,
+                validate: true
+            });
+            this.setState({ findingWidget: false, validationPassed: !validateMessage });
+        }
     }
 
     private updateConstraints(query: string) {
