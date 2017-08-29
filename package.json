@@ -1,7 +1,7 @@
 {
   "name": "offline-search",
   "widgetName": "OfflineSearch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Search Mendix List views using a single-field search",
   "copyright": "Mendix BV",
   "scripts": {
