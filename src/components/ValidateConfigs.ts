@@ -101,7 +101,7 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
 
         while (!targetNode && queryNode) {
             targetNode = props.targetGridName
-                ? queryNode.querySelector(`.mx-name-${props.targetGridName}`) as HTMLElement
+                ? queryNode.querySelector(`.mx-listview.mx-name-${props.targetGridName}`) as HTMLElement
                 : queryNode.querySelectorAll(`.mx-listview`)[0] as HTMLElement;
 
             if (targetNode) break;

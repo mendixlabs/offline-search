@@ -1,13 +1,14 @@
 export type SearchMethodOptions = "equals" | "contains";
 
 export interface CommonProps {
-    class?: string;
     defaultQuery: string;
     placeHolder: string;
     showSearchBar: boolean;
 }
 
 export interface OfflineSearchProps extends CommonProps {
+    class?: string;
+    mxform: mxui.lib.form._FormBase;
     searchAttribute: string;
     searchEntity: string;
     targetGridName: string;

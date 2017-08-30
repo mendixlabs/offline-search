@@ -18,11 +18,6 @@
                 <enumerationValue key="contains">Contains</enumerationValue>
             </enumerationValues>
         </property>
-        <property key="searchEntity" type="string" required="false">
-            <caption>List view entity</caption>
-            <category>Data source</category>
-            <description>Full name of the entity "module.entity". This entity should match the list view entity</description>
-        </property>
         <property key="searchAttribute" type="string">
             <caption>Search attribute</caption>
             <category>Data source</category>
@@ -32,6 +27,11 @@
             <caption>Default query</caption>
             <category>Data source</category>
             <description>The default query that is used to filter the list</description>
+        </property>
+        <property key="searchEntity" type="string" required="false">
+            <caption>List view entity</caption>
+            <category>Data source</category>
+            <description>Optional full name of the entity, e.g. module.entity. This parameter should be used if the search should be on an attribute that is accessed over association</description>
         </property>
         <property key="showSearchBar" type="boolean" defaultValue="true">
             <caption>Show search bar</caption>
