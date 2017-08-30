@@ -11,6 +11,7 @@ import { CommonProps, HybridConstraint, ListView, OfflineSearchProps, OfflineSea
 import "../ui/OfflineSearch.css";
 
 export default class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
+    private navigationHandler: object;
     constructor(props: OfflineSearchProps) {
         super(props);
 
@@ -19,7 +20,7 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
             findingWidget: true
         };
         this.updateConstraints = this.updateConstraints.bind(this);
-        dojoConnect.connect(props.mxform, "onNavigation", this, dojoLang.hitch(this, this.initSearch));
+        this.navigationHandler = dojoConnect.connect(props.mxform, "onNavigation", this, dojoLang.hitch(this, this.initSearch));
     }
 
     render() {
@@ -37,6 +38,10 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
             }),
             this.renderBar()
         );
+    }
+
+    componentWillUnmount() {
+        dojoConnect.disconnect(this.navigationHandler);
     }
 
     private renderBar(): ReactElement<SearchBarProps> {
@@ -76,25 +81,26 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
     }
 
     private updateConstraints(query: string) {
-        let constraints: HybridConstraint | string = [];
-
         if (this.state.targetGrid && this.state.targetGrid._datasource && this.state.validationPassed) {
             const datasource = this.state.targetGrid._datasource;
             if (window.device) {
-                constraints.push({
+                const constraints: HybridConstraint = [ {
                     attribute: this.props.searchAttribute,
                     operator: this.props.searchMethod,
                     path: this.props.searchEntity,
                     value: query
-                });
+                } ];
                 datasource._constraints = query ? constraints : [];
             } else {
-                constraints = this.props.searchEntity && ValidateConfigs.itContains(this.props.searchEntity, "/")
-                    ? `${this.props.searchEntity}[${this.props.searchMethod}(${this.props.searchAttribute},'${query}')]`
-                    : `${this.props.searchMethod}(${this.props.searchAttribute},'${query}')`;
+                let constraints: string;
+                const isReference = this.props.searchEntity && ValidateConfigs.itContains(this.props.searchEntity, "/");
+                if (isReference) {
+                    constraints = `${this.props.searchEntity}[${this.props.searchMethod}(${this.props.searchAttribute},'${query}')]`;
+                } else {
+                    constraints = `${this.props.searchMethod}(${this.props.searchAttribute},'${query}')`;
+                }
                 datasource._constraints = query ? "[" + constraints + "]" : "";
             }
-
             this.state.targetGrid.update();
         }
     }
