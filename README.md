@@ -2,7 +2,7 @@
 [![Dependency Status](https://david-dm.org/mendixlabs/offline-search.svg)](https://david-dm.org/mendixlabs/offline-search)
 [![Dev Dependency Status](https://david-dm.org/mendixlabs/offline-search.svg#info=devDependencies)](https://david-dm.org/mendixlabs/offline-search#info=devDependencies)
 [![codecov](https://codecov.io/gh/mendixlabs/offline-search/branch/master/graph/offline-search.svg)](https://codecov.io/gh/mendixlabs/offline-search)
-![badge](https://img.shields.io/badge/mendix-7.5.1-green.svg)
+![badge](https://img.shields.io/badge/mendix-7.6.0-green.svg)
 # Offline search
 
 Add an interactive search box to your list view, even offline!
