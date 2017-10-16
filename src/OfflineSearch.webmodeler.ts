@@ -3,7 +3,7 @@ import { findDOMNode } from "react-dom";
 
 import { SearchBar, SearchBarProps } from "./components/SearchBar";
 import { ValidateConfigs } from "./components/ValidateConfigs";
-import { CommonProps, OfflineSearchProps, OfflineSearchState, parseStyle } from "./utils/ContainerUtils";
+import { OfflineSearchProps, OfflineSearchState } from "./utils/ContainerUtils";
 
 declare function require(name: string): string;
 type VisibilityMap = {
@@ -15,7 +15,7 @@ export class preview extends Component<OfflineSearchProps, OfflineSearchState> {
     constructor(props: OfflineSearchProps) {
         super(props);
 
-        this.state = { findingWidget: true };
+        this.state = { listviewAvailable: true };
     }
 
     render() {
@@ -24,39 +24,38 @@ export class preview extends Component<OfflineSearchProps, OfflineSearchState> {
                 ...this.props as OfflineSearchProps,
                 inWebModeler: true,
                 queryNode: this.state.targetNode,
-                targetGrid: this.state.targetGrid,
-                validate: !this.state.findingWidget
+                targetListView: this.state.targetListView,
+                validate: !this.state.listviewAvailable
             }),
             createElement(SearchBar, {
-                ...this.props as CommonProps,
+                defaultQuery: "",
                 onTextChangeAction: () => { return; },
-                showSearchBar: true,
-                style: parseStyle(this.props.style)
+                placeHolder: "Search",
+                showSearchBar: true
             })
         );
     }
 
     componentDidMount() {
-        this.validateConfigs(this.props);
+        this.validateConfigs();
     }
 
-    componentWillReceiveProps(newProps: OfflineSearchProps) {
-        this.validateConfigs(newProps);
+    componentWillReceiveProps(_newProps: OfflineSearchProps) {
+        this.validateConfigs();
     }
 
-    private validateConfigs(props: OfflineSearchProps) {
+    private validateConfigs() {
         const routeNode = findDOMNode(this) as HTMLElement;
-        const targetNode = ValidateConfigs.findTargetNode(props, routeNode);
+        const targetNode = ValidateConfigs.findTargetNode(routeNode);
 
         if (targetNode) {
             this.setState({ targetNode });
         }
-        this.setState({ findingWidget: true });
+        this.setState({ listviewAvailable: true });
     }
 }
 
-export function getVisibleProperties(valueMap: SearchBarProps, visibilityMap: VisibilityMap) {
-    valueMap.showSearchBar = visibilityMap.showSearchBar = false;
+export function getVisibleProperties(_valueMap: SearchBarProps, visibilityMap: VisibilityMap) {
 
     return visibilityMap;
 }

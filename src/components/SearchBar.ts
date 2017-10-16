@@ -1,9 +1,10 @@
 import { Component, FormEvent, createElement } from "react";
-import { CommonProps } from "../utils/ContainerUtils";
 
-export interface SearchBarProps extends CommonProps {
+export interface SearchBarProps {
     onTextChangeAction?: (query: string) => void;
-    style: object;
+    defaultQuery: string;
+    placeHolder: string;
+    showSearchBar: boolean;
 }
 
 export interface SearchBarState {

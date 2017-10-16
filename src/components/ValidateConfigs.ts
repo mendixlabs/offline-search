@@ -6,8 +6,7 @@ import { ListView, OfflineSearchProps } from "../utils/ContainerUtils";
 export interface ValidateConfigProps extends OfflineSearchProps {
     inWebModeler?: boolean;
     queryNode?: HTMLElement;
-    targetGrid?: ListView;
-    targetGridName: string;
+    targetListView?: ListView;
     validate: boolean;
 }
 
@@ -23,23 +22,17 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
     }
 
     static validate(props: ValidateConfigProps): string {
-        if (!props.queryNode) {
-            return `${widgetName}: unable to find grid with the name "${props.targetGridName}"`;
-        }
         if (props.inWebModeler) {
             return "";
         }
-        if (!(props.targetGrid && props.targetGrid.declaredClass === "mxui.widget.ListView")) {
-            return `${widgetName}: supplied target name "${props.targetGridName}" is not of the type list view`;
-        }
-        if (!ValidateConfigs.isCompatible(props.targetGrid)) {
+        if (!ValidateConfigs.isCompatible(props.targetListView)) {
             return `${widgetName}: this Mendix version is incompatible with the offline search widget`;
         }
-        if (!props.searchEntity && !ValidateConfigs.isValidAttribute(props.targetGrid._datasource._entity, props)) {
+        if (!props.searchEntity && !ValidateConfigs.isValidAttribute(props.targetListView._datasource._entity, props)) {
             return `${widgetName}: supplied attribute name "${props.searchAttribute}" does not belong to list view`;
         }
         if (props.searchEntity && !ValidateConfigs.itContains(props.searchEntity, "/")) {
-            if (props.searchEntity !== props.targetGrid._datasource._entity) {
+            if (props.searchEntity !== props.targetListView._datasource._entity) {
                 return `${widgetName}: supplied entity "${props.searchEntity}" does not belong to list view data source`;
             }
         }
@@ -57,8 +50,8 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
     }
 
     static getRelatedEntity(props: ValidateConfigProps): string {
-        if (props.targetGrid) {
-            const dataSourceEntity = window.mx.meta.getEntity(props.targetGrid._datasource._entity);
+        if (props.targetListView) {
+            const dataSourceEntity = window.mx.meta.getEntity(props.targetListView._datasource._entity);
             const referenceAttributes: string[] = dataSourceEntity.getReferenceAttributes();
             for (const referenceAttribute of referenceAttributes) {
                 if (ValidateConfigs.itContains(props.searchEntity, referenceAttribute)) {
@@ -74,7 +67,7 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
     }
 
     static isValidAttribute(entity: string, props: ValidateConfigProps): boolean {
-        if (props.targetGrid) {
+        if (props.targetListView) {
             const dataSourceEntity: mendix.lib.MxMetaObject = window.mx.meta.getEntity(entity);
             const dataAttributes: string[] = dataSourceEntity.getAttributes();
             if (ValidateConfigs.itContains(dataAttributes, props.searchAttribute)) {
@@ -85,27 +78,28 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
         return false;
     }
 
-    static isCompatible(targetGrid: ListView): boolean {
-        return !!(targetGrid &&
-            targetGrid._onLoad &&
-            targetGrid._loadMore &&
-            targetGrid._renderData &&
-            targetGrid._datasource &&
-            targetGrid._datasource.atEnd &&
-            typeof targetGrid._datasource._pageSize !== "undefined" &&
-            typeof targetGrid._datasource._setSize !== "undefined");
+    static isCompatible(targetListView: ListView): boolean {
+        return !!(targetListView &&
+            targetListView._onLoad &&
+            targetListView._loadMore &&
+            targetListView._renderData &&
+            targetListView._datasource &&
+            targetListView._datasource.atEnd &&
+            typeof targetListView._datasource._pageSize !== "undefined" &&
+            typeof targetListView._datasource._setSize !== "undefined");
     }
 
-    static findTargetNode(props: OfflineSearchProps, queryNode: HTMLElement): HTMLElement | null {
+    static findTargetNode(filterNode: HTMLElement): HTMLElement | null {
         let targetNode: HTMLElement | null = null ;
 
-        while (!targetNode && queryNode) {
-            targetNode = props.targetGridName
-                ? queryNode.querySelector(`.mx-listview.mx-name-${props.targetGridName}`) as HTMLElement
-                : queryNode.querySelectorAll(`.mx-listview`)[0] as HTMLElement;
+        while (!targetNode && filterNode) {
+            targetNode = filterNode.querySelectorAll(`.mx-listview`)[0] as HTMLElement;
+            if (targetNode || filterNode.isEqualNode(document) || filterNode.classList.contains("mx-incubator")
+                || filterNode.classList.contains("mx-offscreen")) {
+                break;
+            }
 
-            if (targetNode) break;
-            queryNode = queryNode.parentNode as HTMLElement;
+            filterNode = filterNode.parentNode as HTMLElement;
         }
 
         return targetNode;

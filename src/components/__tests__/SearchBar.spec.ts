@@ -2,7 +2,6 @@ import { mount, shallow } from "enzyme";
 import { createElement } from "react";
 
 import { SearchBar, SearchBarProps } from "../SearchBar";
-import { parseStyle } from "../../utils/ContainerUtils";
 
 describe("SearchBar", () => {
     const renderSearchBar = (props: SearchBarProps) => shallow(createElement(SearchBar, props));
@@ -11,8 +10,7 @@ describe("SearchBar", () => {
         defaultQuery: "search bar",
         onTextChangeAction:  jasmine.any(Function) as any,
         placeHolder: "Search",
-        showSearchBar: true,
-        style: parseStyle("html{}")
+        showSearchBar: true
     };
 
     it("renders the structure correctly", () => {
