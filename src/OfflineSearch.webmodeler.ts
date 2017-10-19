@@ -30,7 +30,7 @@ export class preview extends Component<OfflineSearchProps, OfflineSearchState> {
             createElement(SearchBar, {
                 defaultQuery: "",
                 onTextChangeAction: () => { return; },
-                placeHolder: "Search",
+                placeHolder: this.props.placeHolder,
                 showSearchBar: true
             })
         );
@@ -55,7 +55,8 @@ export class preview extends Component<OfflineSearchProps, OfflineSearchState> {
     }
 }
 
-export function getVisibleProperties(_valueMap: SearchBarProps, visibilityMap: VisibilityMap) {
+export function getVisibleProperties(valueMap: SearchBarProps, visibilityMap: VisibilityMap) {
+    valueMap.showSearchBar = visibilityMap.showSearchBar = false;
 
     return visibilityMap;
 }

@@ -10,7 +10,7 @@ export interface ValidateConfigProps extends OfflineSearchProps {
     validate: boolean;
 }
 
-const widgetName = "search offline widget";
+const getAlertMessage = (friendlyId: string, message: string) => `Custom widget ${friendlyId} error in configuration" ${message}`;
 
 export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
     render() {
@@ -26,67 +26,27 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
             return "";
         }
         if (!ValidateConfigs.isCompatible(props.targetListView)) {
-            return `${widgetName}: this Mendix version is incompatible with the offline search widget`;
-        }
-        if (!props.searchEntity && !ValidateConfigs.isValidAttribute(props.targetListView._datasource._entity, props)) {
-            return `${widgetName}: supplied attribute name "${props.searchAttribute}" does not belong to list view`;
+            return getAlertMessage(props.friendlyId, "this Mendix version is incompatible with the offline search widget");
         }
         if (props.searchEntity && !ValidateConfigs.itContains(props.searchEntity, "/")) {
             if (props.searchEntity !== props.targetListView._datasource._entity) {
-                return `${widgetName}: supplied entity "${props.searchEntity}" does not belong to list view data source`;
-            }
-        }
-        if (props.searchEntity && ValidateConfigs.itContains(props.searchEntity, "/") && !ValidateConfigs.getRelatedEntity(props)) {
-            return `${widgetName}: supplied entity "${props.searchEntity}" does not belong to list view data source reference`;
-        }
-        if (props.searchEntity && ValidateConfigs.itContains(props.searchEntity, "/")) {
-            const entityPath = ValidateConfigs.getRelatedEntity(props);
-            if (props.searchEntity && !ValidateConfigs.isValidAttribute(entityPath, props)) {
-                return `${widgetName}: supplied attribute name "${props.searchAttribute}" does not belong to list view data source reference`;
+                return getAlertMessage(props.friendlyId, `supplied entity ${props.searchEntity} does not belong to list view data source`);
             }
         }
 
         return "";
-    }
-
-    static getRelatedEntity(props: ValidateConfigProps): string {
-        if (props.targetListView) {
-            const dataSourceEntity = window.mx.meta.getEntity(props.targetListView._datasource._entity);
-            const referenceAttributes: string[] = dataSourceEntity.getReferenceAttributes();
-            for (const referenceAttribute of referenceAttributes) {
-                if (ValidateConfigs.itContains(props.searchEntity, referenceAttribute)) {
-                    const selectorEntity = dataSourceEntity.getSelectorEntity(referenceAttribute);
-                    if (ValidateConfigs.itContains(props.searchEntity, selectorEntity)) {
-                        return selectorEntity;
-                    }
-                }
-            }
-        }
-
-        return "";
-    }
-
-    static isValidAttribute(entity: string, props: ValidateConfigProps): boolean {
-        if (props.targetListView) {
-            const dataSourceEntity: mendix.lib.MxMetaObject = window.mx.meta.getEntity(entity);
-            const dataAttributes: string[] = dataSourceEntity.getAttributes();
-            if (ValidateConfigs.itContains(dataAttributes, props.searchAttribute)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     static isCompatible(targetListView: ListView): boolean {
-        return !!(targetListView &&
-            targetListView._onLoad &&
-            targetListView._loadMore &&
-            targetListView._renderData &&
-            targetListView._datasource &&
-            targetListView._datasource.atEnd &&
-            typeof targetListView._datasource._pageSize !== "undefined" &&
-            typeof targetListView._datasource._setSize !== "undefined");
+        return !!(targetListView
+            && targetListView._onLoad
+            && targetListView._loadMore
+            && targetListView._renderData
+            && targetListView._datasource
+            && targetListView._datasource.atEnd
+            && targetListView.update
+            && typeof targetListView._datasource._pageSize !== "undefined"
+            && typeof targetListView._datasource._setSize !== "undefined");
     }
 
     static findTargetNode(filterNode: HTMLElement): HTMLElement | null {

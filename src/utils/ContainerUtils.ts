@@ -2,6 +2,7 @@ export type SearchMethodOptions = "equals" | "contains";
 
 export interface WrapperProps {
     class?: string;
+    friendlyId: string;
     mxform: mxui.lib.form._FormBase;
     mxObject: mendix.lib.MxObject;
     style: string;

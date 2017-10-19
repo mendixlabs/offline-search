@@ -10,7 +10,7 @@ import { ValidateConfigs } from "./ValidateConfigs";
 import { HybridConstraint, ListView, OfflineSearchProps, OfflineSearchState, parseStyle } from "../utils/ContainerUtils";
 import "../ui/OfflineSearch.css";
 
-export default class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
+export default class OfflineSearchContainer extends Component<OfflineSearchProps, OfflineSearchState> {
     private navigationHandler: object;
     constructor(props: OfflineSearchProps) {
         super(props);
