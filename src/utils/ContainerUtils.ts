@@ -37,7 +37,7 @@ export interface ListView extends mxui.widget._WidgetBase {
     _loadMore: () => void;
     _onLoad: () => void;
     _renderData: () => void;
-    update: () => void;
+    update: (obj?: mendix.lib.MxObject | null, callback?: () => void) => void;
 }
 
 export const parseStyle = (style = ""): {[key: string]: string} => {

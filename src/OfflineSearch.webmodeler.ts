@@ -62,5 +62,5 @@ export function getVisibleProperties(valueMap: SearchBarProps, visibilityMap: Vi
 }
 
 export function getPreviewCss() {
-    return require("./ui/OfflineSearch.css");
+    return require("./ui/OfflineSearch.scss");
 }

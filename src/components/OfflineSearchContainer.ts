@@ -8,7 +8,7 @@ import * as dojoConnect from "dojo/_base/connect";
 import { SearchBar, SearchBarProps } from "./SearchBar";
 import { ValidateConfigs } from "./ValidateConfigs";
 import { HybridConstraint, ListView, OfflineSearchProps, OfflineSearchState, parseStyle } from "../utils/ContainerUtils";
-import "../ui/OfflineSearch.css";
+import "../ui/OfflineSearch.scss";
 
 export default class OfflineSearchContainer extends Component<OfflineSearchProps, OfflineSearchState> {
     private navigationHandler: object;
@@ -80,8 +80,10 @@ export default class OfflineSearchContainer extends Component<OfflineSearchProps
     }
 
     private updateConstraints(query: string) {
-        if (this.state.targetListView && this.state.targetListView._datasource && this.state.validationPassed) {
-            const datasource = this.state.targetListView._datasource;
+        const { targetListView, targetNode } = this.state;
+        if (targetListView && targetListView._datasource && this.state.validationPassed) {
+            this.showLoader(targetNode);
+            const datasource = targetListView._datasource;
             if (window.device) {
                 const constraints: HybridConstraint = [ {
                     attribute: this.props.searchAttribute,
@@ -100,7 +102,22 @@ export default class OfflineSearchContainer extends Component<OfflineSearchProps
                 }
                 datasource._constraints = query ? "[" + constraints + "]" : "";
             }
-            this.state.targetListView.update();
+            targetListView.update();
+            targetListView.update(null, () => {
+                this.hideLoader(targetNode);
+            });
+        }
+    }
+
+    private showLoader(node?: HTMLElement) {
+        if (node) {
+            node.classList.add("widget-offline-search-loading");
+        }
+    }
+
+    private hideLoader(node?: HTMLElement) {
+        if (node) {
+            node.classList.remove("widget-offline-search-loading");
         }
     }
 }

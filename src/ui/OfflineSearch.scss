@@ -1,0 +1,39 @@
+.widget-offline-search{
+    
+    .search-bar {
+        position: relative;
+
+        input {
+            display: inline-block;
+            padding-left: 30px;
+        }
+
+        .btn-transparent {
+            border: none;
+        }
+
+        button {
+            position: absolute;
+            right: 2px;
+            top: 7px;
+        }
+    }
+
+    .search-bar > span {
+        left: 10px;
+        position: absolute;
+        top: 9px;
+    }
+}
+
+.widget-offline-search-loading > * {
+    opacity: 0 !important;
+}
+
+.widget-offline-search-loading {
+    background-color: white;
+    background-image: url(./loading.gif);
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
