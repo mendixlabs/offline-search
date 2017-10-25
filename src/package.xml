@@ -5,7 +5,7 @@
             <widgetFile path="OfflineSearch.xml"/>
         </widgetFiles>
         <files>
-            <file path="com/mendix/widget/custom/OfflineSearch"/>
+            <file path="com/mendix/widget/custom/offlinesearch"/>
         </files>
     </clientModule>
 </package>
