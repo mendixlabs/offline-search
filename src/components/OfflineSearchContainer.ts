@@ -84,7 +84,7 @@ export default class OfflineSearchContainer extends Component<OfflineSearchProps
         if (targetListView && targetListView._datasource && this.state.validationPassed) {
             this.showLoader(targetNode);
             const datasource = targetListView._datasource;
-            if (window.device) {
+            if (window.device && window.mx.isOffline()) {
                 const constraints: HybridConstraint = [ {
                     attribute: this.props.searchAttribute,
                     operator: this.props.searchMethod,
