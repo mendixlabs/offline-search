@@ -43,7 +43,6 @@ export class ValidateConfigs extends Component<ValidateConfigProps, {}> {
             && targetListView._loadMore
             && targetListView._renderData
             && targetListView._datasource
-            && targetListView._datasource.atEnd
             && targetListView.update
             && typeof targetListView._datasource._pageSize !== "undefined"
             && typeof targetListView._datasource._setSize !== "undefined");
