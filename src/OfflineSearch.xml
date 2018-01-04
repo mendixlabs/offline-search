@@ -7,12 +7,12 @@
         <property key="searchEntity" type="entity"  required="false">
             <caption>List view with entity</caption>
             <category>Data source</category>
-            <description>Entity whose attributes will be searched. This entity should match the list view entity</description>
+            <description>Select the same entity as the list view that this widget should interact with. If multiple list views with this entity are found, the closest is used</description>
         </property>
         <property key="searchAttribute" type="attribute" isPath="optional" pathType="reference" entityProperty="searchEntity">
             <caption>Attribute</caption>
             <category>Data source</category>
-            <description>The attribute of the list view entity</description>
+            <description>The attribute of the list view entity to be searched. Attribute over relations are also supported</description>
             <attributeTypes>
                 <attributeType name="String"/>
                 <attributeType name="Integer"/>
@@ -42,8 +42,8 @@
             <category>Data source</category>
             <description>Contains as default and first option</description>
             <enumerationValues>
-                <enumerationValue key="equals">Equals</enumerationValue>
                 <enumerationValue key="contains">Contains</enumerationValue>
+                <enumerationValue key="equals">Equals</enumerationValue>
             </enumerationValues>
         </property>
         <property key="showSearchBar" type="boolean" defaultValue="true">
