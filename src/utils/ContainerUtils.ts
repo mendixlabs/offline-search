@@ -1,25 +1,26 @@
 export type SearchMethodOptions = "equals" | "contains";
 
-export interface CommonProps {
-    defaultQuery: string;
-    placeHolder: string;
-    showSearchBar: boolean;
+export interface WrapperProps {
+    class?: string;
+    friendlyId: string;
+    mxform: mxui.lib.form._FormBase;
+    mxObject: mendix.lib.MxObject;
+    style: string;
 }
 
-export interface OfflineSearchProps extends CommonProps {
-    class?: string;
-    mxform: mxui.lib.form._FormBase;
+export interface OfflineSearchProps extends WrapperProps {
+    defaultQuery: string;
+    placeHolder: string;
     searchAttribute: string;
     searchEntity: string;
-    targetGridName: string;
     searchMethod: SearchMethodOptions;
-    style: string;
+    showSearchBar: boolean;
 }
 export interface OfflineSearchState {
     alertMessage?: string;
-    targetGrid?: ListView;
+    targetListView?: ListView;
     targetNode?: HTMLElement;
-    findingWidget: boolean;
+    listviewAvailable: boolean;
     validationPassed?: boolean;
 }
 
@@ -36,7 +37,7 @@ export interface ListView extends mxui.widget._WidgetBase {
     _loadMore: () => void;
     _onLoad: () => void;
     _renderData: () => void;
-    update: () => void;
+    update: (obj?: mendix.lib.MxObject | null, callback?: () => void) => void;
 }
 
 export const parseStyle = (style = ""): {[key: string]: string} => {

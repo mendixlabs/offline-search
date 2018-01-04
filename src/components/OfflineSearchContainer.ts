@@ -7,17 +7,17 @@ import * as dojoConnect from "dojo/_base/connect";
 
 import { SearchBar, SearchBarProps } from "./SearchBar";
 import { ValidateConfigs } from "./ValidateConfigs";
-import { CommonProps, HybridConstraint, ListView, OfflineSearchProps, OfflineSearchState, parseStyle } from "../utils/ContainerUtils";
-import "../ui/OfflineSearch.css";
+import { HybridConstraint, ListView, OfflineSearchProps, OfflineSearchState, parseStyle } from "../utils/ContainerUtils";
+import "../ui/OfflineSearch.scss";
 
-export default class OfflineSearch extends Component<OfflineSearchProps, OfflineSearchState> {
+export default class OfflineSearchContainer extends Component<OfflineSearchProps, OfflineSearchState> {
     private navigationHandler: object;
     constructor(props: OfflineSearchProps) {
         super(props);
 
         this.state = {
             alertMessage: "",
-            findingWidget: true
+            listviewAvailable: true
         };
         this.updateConstraints = this.updateConstraints.bind(this);
         this.navigationHandler = dojoConnect.connect(props.mxform, "onNavigation", this, dojoLang.hitch(this, this.initSearch));
@@ -32,9 +32,8 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
             createElement(ValidateConfigs, {
                 ...this.props as OfflineSearchProps,
                 queryNode: this.state.targetNode,
-                targetGrid: this.state.targetGrid,
-                targetGridName: this.props.targetGridName,
-                validate: !this.state.findingWidget
+                targetListView: this.state.targetListView,
+                validate: !this.state.listviewAvailable
             }),
             this.renderBar()
         );
@@ -47,9 +46,10 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
     private renderBar(): ReactElement<SearchBarProps> {
         if (this.state.validationPassed) {
             return createElement(SearchBar, {
-                ...this.props as CommonProps,
+                defaultQuery: this.props.defaultQuery,
                 onTextChangeAction: this.updateConstraints,
-                style: parseStyle(this.props.style)
+                placeHolder: this.props.placeHolder,
+                showSearchBar: this.props.showSearchBar
             });
         }
 
@@ -59,31 +59,32 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
     private initSearch() {
         if (!this.state.validationPassed) {
             const queryNode = findDOMNode(this).parentNode as HTMLElement;
-            const targetNode = ValidateConfigs.findTargetNode(this.props, queryNode);
-            let targetGrid: ListView | null = null;
+            const targetNode = ValidateConfigs.findTargetNode(queryNode);
+            let targetListView: ListView | null = null;
 
             if (targetNode) {
                 this.setState({ targetNode });
-                targetGrid = dijitRegistry.byNode(targetNode);
-                if (targetGrid) {
-                    this.setState({ targetGrid });
+                targetListView = dijitRegistry.byNode(targetNode);
+                if (targetListView) {
+                    this.setState({ targetListView });
                 }
             }
             const validateMessage = ValidateConfigs.validate({
                 ...this.props as OfflineSearchProps,
                 queryNode: targetNode,
-                targetGrid,
-                targetGridName: this.props.targetGridName,
+                targetListView,
                 validate: true
             });
-            this.setState({ findingWidget: false, validationPassed: !validateMessage });
+            this.setState({ listviewAvailable: false, validationPassed: !validateMessage });
         }
     }
 
     private updateConstraints(query: string) {
-        if (this.state.targetGrid && this.state.targetGrid._datasource && this.state.validationPassed) {
-            const datasource = this.state.targetGrid._datasource;
-            if (window.device) {
+        const { targetListView, targetNode } = this.state;
+        if (targetListView && targetListView._datasource && this.state.validationPassed) {
+            this.showLoader(targetNode);
+            const datasource = targetListView._datasource;
+            if (window.device && window.mx.isOffline()) {
                 const constraints: HybridConstraint = [ {
                     attribute: this.props.searchAttribute,
                     operator: this.props.searchMethod,
@@ -101,7 +102,22 @@ export default class OfflineSearch extends Component<OfflineSearchProps, Offline
                 }
                 datasource._constraints = query ? "[" + constraints + "]" : "";
             }
-            this.state.targetGrid.update();
+            targetListView.update();
+            targetListView.update(null, () => {
+                this.hideLoader(targetNode);
+            });
+        }
+    }
+
+    private showLoader(node?: HTMLElement) {
+        if (node) {
+            node.classList.add("widget-offline-search-loading");
+        }
+    }
+
+    private hideLoader(node?: HTMLElement) {
+        if (node) {
+            node.classList.remove("widget-offline-search-loading");
         }
     }
 }

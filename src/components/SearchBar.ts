@@ -1,9 +1,10 @@
 import { Component, FormEvent, createElement } from "react";
-import { CommonProps } from "../utils/ContainerUtils";
 
-export interface SearchBarProps extends CommonProps {
+export interface SearchBarProps {
     onTextChangeAction?: (query: string) => void;
-    style: object;
+    defaultQuery: string;
+    placeHolder: string;
+    showSearchBar: boolean;
 }
 
 export interface SearchBarState {
@@ -11,6 +12,7 @@ export interface SearchBarState {
 }
 
 export class SearchBar extends Component<SearchBarProps, SearchBarState> {
+    private updateTimer: number;
 
     constructor(props: SearchBarProps) {
         super(props);
@@ -49,7 +51,10 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
 
     componentDidUpdate(_prevProps: SearchBarProps, prevState: SearchBarState) {
         if (this.state.query !== prevState.query) {
-            setTimeout(() => {
+            if (this.updateTimer) {
+                window.clearTimeout(this.updateTimer);
+            }
+            this.updateTimer = window.setTimeout(() => {
                 this.props.onTextChangeAction(this.state.query);
             }, this.geTimeOut());
         }

@@ -2,14 +2,15 @@ const webpack = require("webpack");
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const package = require("./package");
-const widgetName = package.widgetName;
+const pkg = require("./package");
+const widgetName = pkg.widgetName;
+const packageName = pkg.widgetName.toLowerCase();
 
 const widgetConfig = {
-    entry: `./src/components/${widgetName}.ts`,
+    entry: `./src/components/${widgetName}Container.ts`,
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: `src/com/mendix/widget/custom/${widgetName}/${widgetName}.js`,
+        filename: `src/com/mendix/widget/custom/${packageName}/${widgetName}.js`,
         libraryTarget: "umd"
     },
     resolve: {
@@ -21,10 +22,20 @@ const widgetConfig = {
     module: {
         rules: [
             { test: /\.ts$/, use: "ts-loader" },
-            { test: /\.css$/, loader: ExtractTextPlugin.extract({
-                fallback: "style-loader",
-                use: "css-loader"
-            }) }
+            {
+                test: /\.scss$/,
+                loader: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: "css-loader!sass-loader"
+                })
+            },
+            {
+                test: /\.gif$/,
+                use: [ {
+                    loader: "url-loader",
+                    options: { limit: 8192 }
+                } ]
+            }
         ]
     },
     devtool: "source-map",
@@ -33,7 +44,7 @@ const widgetConfig = {
         new CopyWebpackPlugin([
             { from: "src/**/*.xml" },
         ], { copyUnmodified: true }),
-        new ExtractTextPlugin({ filename: `./src/com/mendix/widget/custom/${widgetName}/ui/${widgetName}.css` }),
+        new ExtractTextPlugin({ filename: `./src/com/mendix/widget/custom/${packageName}/ui/${widgetName}.css` }),
         new webpack.LoaderOptionsPlugin({ debug: true })
     ]
 };
@@ -51,7 +62,11 @@ const previewConfig = {
     module: {
         rules: [
             { test: /\.ts$/, use: "ts-loader" },
-            { test: /\.css$/, loader: "raw-loader" }
+            { test: /\.css$/, loader: "raw-loader" },
+            { test: /\.scss$/, use: [
+                { loader: "raw-loader" },
+                { loader: "sass-loader" }
+            ] }
         ]
     },
     devtool: "inline-source-map",
