@@ -52,8 +52,6 @@ export default class OfflineSearchContainer extends Component<OfflineSearchProps
                 showSearchBar: this.props.showSearchBar
             });
         }
-
-        return null;
     }
 
     private initSearch() {

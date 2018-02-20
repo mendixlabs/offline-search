@@ -9,9 +9,12 @@ describe("OfflineSearch", () => {
         page.searchInput.waitForVisible();
         page.searchInput.click();
         page.searchInput.setValue(testValue);
+        page.listViewList.waitForVisible();
 
         const listviewItems: Element[] = page.listViewList.value;
-        expect(listviewItems.length).toBe(1);
+        if (listviewItems) {
+            expect(listviewItems.length).toBe(1);
+        }
     });
 
     it("when query is entered in the search input and clear button clicked the list view should be filtered with new query", () => {
@@ -19,9 +22,12 @@ describe("OfflineSearch", () => {
         page.searchInput.waitForVisible();
         page.searchInput.click();
         page.searchInput.setValue(testValue);
+        page.listViewList.waitForVisible();
 
         let listviewItems: Element[] = page.listViewList.value;
-        expect(listviewItems.length).toBe(1);
+        if (listviewItems) {
+            expect(listviewItems.length).toBe(1);
+        }
 
         page.searchButton.click();
 
@@ -30,7 +36,7 @@ describe("OfflineSearch", () => {
             expect(listviewItems.length).toBeGreaterThan(1);
         }, 3000);
 
-        page.searchInput.setValue("e");
+        page.searchInput.setValue("c");
 
         setTimeout(() => {
             listviewItems = page.listViewList.value;

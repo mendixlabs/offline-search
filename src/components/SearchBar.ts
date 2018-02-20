@@ -55,7 +55,9 @@ export class SearchBar extends Component<SearchBarProps, SearchBarState> {
                 window.clearTimeout(this.updateTimer);
             }
             this.updateTimer = window.setTimeout(() => {
-                this.props.onTextChangeAction(this.state.query);
+                if (this.props.onTextChangeAction) {
+                    this.props.onTextChangeAction(this.state.query);
+                }
             }, this.geTimeOut());
         }
     }
