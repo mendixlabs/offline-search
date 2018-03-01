@@ -15,17 +15,15 @@ exports.config = {
     bail: 0,
     screenshotPath: "dist/wdio/",
     baseUrl: debug ? "http://localhost:8080/" : "https://offlinesearch.mxapps.io/",
-    waitforTimeout: 100000,
-    connectionRetryTimeout: 180000,
-    connectionRetryCount: 0,
+    waitforTimeout: 300000,
+    connectionRetryTimeout: 200000,
+    connectionRetryCount: 3,
     services: [ "selenium-standalone" ],
-
     framework: "jasmine",
-    reporters: [ "spec" ],
+    reporters: [ "dot", "spec" ],
     execArgv: debug ? [ "--inspect" ] : undefined,
-    // Options to be passed to Jasmine.
     jasmineNodeOpts: {
-        defaultTimeoutInterval: debug ? (60 * 60 * 1000) : (100 * 10000),
+        defaultTimeoutInterval: debug ? (60 * 60 * 1000) : (100 * 1000),
         expectationResultHandler: function(passed, assertion) {
             if (passed) {
                 return;

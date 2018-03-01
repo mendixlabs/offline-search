@@ -12,7 +12,7 @@
     "eofline": true,
     "indent": [
       true,
-      "tab"
+      "spaces"
     ],
     "member-ordering": [
       true,
@@ -89,6 +89,7 @@
     "no-extra-semi": true,
     "no-irregular-whitespace": true,
     "no-duplicate-case": true,
+    "no-implicit-dependencies": false,
     "no-control-regex": true,
     "no-empty-character-class": true,
     "no-ex-assign": true,
